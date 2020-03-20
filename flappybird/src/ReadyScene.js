@@ -19,7 +19,7 @@
         image: properties.image,
         rect: [0, 158, 286, 246]
       });
-ß
+
       //确定getready和tap的位置
       tap.x = this.width - tap.width >> 1;
       tap.y = this.height - tap.height + 40 >> 1;

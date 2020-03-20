@@ -19,7 +19,7 @@
         image: properties.image,
         rect: [0, 298, 508, 158]
       });
-ß
+
       var startBtn = new Hilo.Bitmap({
         id: 'start',
         image: properties.image,
