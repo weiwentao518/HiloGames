@@ -36,7 +36,7 @@
       this.scale = 0.5;
 
       //舞台画布
-      var renderType = location.search.indexOf('dom') != -1 ? 'dom' : 'canvas';
+      var renderType = location.search.indexOf('dom') !== -1 ? 'dom' : 'canvas';
 
       //舞台
       this.stage = new Hilo.Stage({

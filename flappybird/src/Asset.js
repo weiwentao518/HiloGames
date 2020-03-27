@@ -56,8 +56,6 @@
       this.over = this.queue.get('over').content;
       this.holdback = this.queue.get('holdback').content;
 
-      console.log(this.bg)
-
       this.birdAtlas = new Hilo.TextureAtlas({
         image: this.queue.get('bird').content,
         frames: [
@@ -69,8 +67,6 @@
           bird: [0, 1, 2]
         }
       });
-
-      console.log(this.birdAtlas)
 
       var number = this.queue.get('number').content;
       this.numberGlyphs = {
