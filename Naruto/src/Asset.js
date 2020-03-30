@@ -21,6 +21,10 @@
           src: 'images/role-third.png'
         },
         {
+          id: 'number',
+          src: 'images/number.png'
+        },
+        {
           id: 'door',
           src: 'images/door.png'
         },
@@ -113,16 +117,49 @@
         }
       });
 
-      this.bgAtlas = new Hilo.TextureAtlas({
-        image: this.queue.getContent('bg2'),
-        frames: {
-          frameWidth: 256,
-          frameHeight: 300,
-          numFrames: 5
+      var number = this.queue.get('number').content
+      this.numberGlyphs = {
+        0: {
+          image: number,
+          rect: [0, 0, 60, 91]
         },
-        width: 256,
-        height: 300,
-      });
+        1: {
+          image: number,
+          rect: [61, 0, 60, 91]
+        },
+        2: {
+          image: number,
+          rect: [121, 0, 60, 91]
+        },
+        3: {
+          image: number,
+          rect: [191, 0, 60, 91]
+        },
+        4: {
+          image: number,
+          rect: [261, 0, 60, 91]
+        },
+        5: {
+          image: number,
+          rect: [331, 0, 60, 91]
+        },
+        6: {
+          image: number,
+          rect: [401, 0, 60, 91]
+        },
+        7: {
+          image: number,
+          rect: [471, 0, 60, 91]
+        },
+        8: {
+          image: number,
+          rect: [541, 0, 60, 91]
+        },
+        9: {
+          image: number,
+          rect: [611, 0, 60, 91]
+        }
+      }
 
       this.queue.off('complete');
       this.fire('complete');

@@ -1,4 +1,6 @@
 (function () {
+  var Databus = new window.Databus()
+  var { hitTestRectangle } = Databus
 
   window.onload = function () {
     game.init();
@@ -111,10 +113,9 @@
       }).addTo(this.stage);
 
       // 门
-      var doorImg = this.asset.door;
       this.door = new Hilo.Bitmap({
         id: 'door',
-        image: doorImg,
+        image: this.asset.door,
         x: 75,
         y: 10,
         width: 50,
@@ -122,7 +123,7 @@
       }).addTo(this.stage);
 
       // 宝箱
-      this.door = new Hilo.Bitmap({
+      this.treasure = new Hilo.Bitmap({
         id: 'treasure',
         image: this.asset.treasure,
         x: this.width - 150,
@@ -164,7 +165,6 @@
         atlas: this.asset.roleAtlas,
         startX: 100,
         startY: this.height / 2 - 20,
-        // groundY: this.ground.y - 12
       }).addTo(this.stage, 1);
       this.role.getReady();
 
@@ -174,19 +174,15 @@
     },
 
     onUpdate: function (delta) {
-      // if (this.state === 'ready') {
-      //   return;
-      // }
+      if (hitTestRectangle(this.role, this.treasure)) {
+        // If the treasure is touching the explorer, center it over the explorer
+        this.treasure.x = this.role.x + 15;
+        this.treasure.y = this.role.y + -10;
+      }
 
-      // if (this.role.isDead) {
-      //   this.gameOver();
-      // } else {
-      //   this.currentScore.setText(this.calcScore());
-      //   //碰撞检测
-      //   if (this.holdbacks.checkCollision(this.role)) {
-      //     this.gameOver();
-      //   }
-      // }
+      if (hitTestRectangle(this.treasure, this.door)) {
+        console.log('你赢了！')
+      }
     },
 
     gameReady: function () {

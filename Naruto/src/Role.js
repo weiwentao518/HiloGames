@@ -1,5 +1,5 @@
 (function (ns) {
-  var Databus = new ns.Databus()
+  var Databus = new window.Databus()
   var { BG_CORNER } = Databus
 
   var Role = ns.Role = Hilo.Class.create({
@@ -9,7 +9,7 @@
 
       this.width = 70
       this.height = 90
-      this.speed = 10
+      this.speed = 12
       this.direction = 'standing'
 
       this.atlas = props.atlas
