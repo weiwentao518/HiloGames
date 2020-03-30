@@ -30,7 +30,7 @@
     },
 
     initStage: function () {
-      this.width = Math.min(10000, 900) * 2;
+      this.width = Math.min(10000, 600) * 2;
       this.height = Math.min(10000, 600) * 2;
       this.scale = 0.5;
 
@@ -57,16 +57,16 @@
       this.stage.enableDOMEvent(Hilo.event.POINTER_START, true);
       // this.stage.on(Hilo.event.POINTER_START, this.onUserInput.bind(this));
 
-      //Space键控制
-      // if (document.addEventListener) {
-      //   document.addEventListener('keydown', function (e) {
-      //     if (e.keyCode === 32) this.onUserInput(e);
-      //   }.bind(this));
-      // } else {
-      //   document.attachEvent('onkeydown', function (e) {
-      //     if (e.keyCode === 32) this.onUserInput(e);
-      //   }.bind(this));
-      // }
+      // WASD键控制
+      if (document.addEventListener) {
+        document.addEventListener('keydown', function (e) {
+          this.onKeydown(e)
+        }.bind(this))
+
+        document.addEventListener('keyup', function (e) {
+          this.onKeyup(e)
+        }.bind(this))
+      }
 
       //舞台更新
       this.stage.onUpdate = this.onUpdate.bind(this);
@@ -81,6 +81,25 @@
       // this.gameReady();
     },
 
+    onKeydown: function (e) {
+      switch (e.keyCode) {
+        case 87: this.role.run('up')
+        break
+        case 65: this.role.run('left')
+        break
+        case 68: this.role.run('right')
+        break
+        case 83: this.role.run('down')
+        break
+        default: this.role.stand()
+      }
+    },
+
+    onKeyup: function () {
+      console.warn('stand')
+      this.role.stand()
+    },
+
     initBackground: function () {
       //背景
       var bgWidth = this.width * this.scale;
@@ -93,27 +112,20 @@
         scaleX: this.width / bgImg.width,
         scaleY: this.height / bgImg.height
       }).addTo(this.stage);
-      return
 
-      //地面
-      var groundImg = this.asset.ground;
-      var groundOffset = 60;
-      this.ground = new Hilo.Bitmap({
-        id: 'ground',
-        image: groundImg,
-        scaleX: (this.width + groundOffset * 2) / groundImg.width
+      // 门
+      var doorImg = this.asset.door;
+      this.door = new Hilo.Bitmap({
+        id: 'door',
+        image: doorImg,
+        x: 75,
+        pivotY: 1125,
+        width: 50,
+        height: 60,
       }).addTo(this.stage);
 
       //设置地面的y轴坐标
-      this.ground.y = this.height - this.ground.height;
-
-      //移动地面
-      Hilo.Tween.to(this.ground, {
-        x: -groundOffset * this.ground.scaleX
-      }, {
-        duration: 400,
-        loop: true
-      });
+      this.door.y = this.height - this.door.height;
     },
 
     initScenes: function () {
@@ -146,11 +158,13 @@
       this.role = new game.Role({
         id: 'role',
         atlas: this.asset.roleAtlas,
-        startX: 500,
-        startY: 500,
+        startX: 100,
+        startY: this.height / 2 - 20,
         // groundY: this.ground.y - 12
       }).addTo(this.stage, 1);
       this.role.getReady();
+
+      console.log('role', this.role.depth)
     },
 
     onUpdate: function (delta) {
