@@ -102,9 +102,6 @@
 
     initBackground: function () {
       //背景
-      var bgWidth = this.width * this.scale;
-      var bgHeight = this.height * this.scale;
-
       var bgImg = this.asset.bg;
       this.bg = new Hilo.Bitmap({
         id: 'bg',
@@ -119,13 +116,20 @@
         id: 'door',
         image: doorImg,
         x: 75,
-        pivotY: 1125,
+        y: 10,
         width: 50,
         height: 60,
       }).addTo(this.stage);
 
-      //设置地面的y轴坐标
-      this.door.y = this.height - this.door.height;
+      // 宝箱
+      this.door = new Hilo.Bitmap({
+        id: 'treasure',
+        image: this.asset.treasure,
+        x: this.width - 150,
+        y: this.height / 2,
+        width: 40,
+        height: 40,
+      }).addTo(this.stage);
     },
 
     initScenes: function () {
@@ -165,6 +169,8 @@
       this.role.getReady();
 
       console.log('role', this.role.depth)
+
+      // this.addFrame(this.asset.bgAtlas.getFrame(0));
     },
 
     onUpdate: function (delta) {

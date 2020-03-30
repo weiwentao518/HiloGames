@@ -1,4 +1,6 @@
 (function (ns) {
+  var Databus = new ns.Databus()
+  var { BG_CORNER } = Databus
 
   var Role = ns.Role = Hilo.Class.create({
     Extends: Hilo.Sprite,
@@ -7,18 +9,20 @@
 
       this.width = 70
       this.height = 90
-      this.speed = 15
+      this.speed = 10
       this.direction = 'standing'
 
       this.atlas = props.atlas
       this.startX = props.startX //小鸟的起始x坐标
       this.startY = props.startY //小鸟的起始y坐标
       this.addFrame(this.atlas.getSprite('standing'));
+      // this.addFrame(this.atlas.getFrame(0));
     },
 
     run: function (direction) {
       if (this.direction === direction) {
-        this.tween && this.tween.stop();
+        // 清除tween，否则无法y轴移动
+        this.tween && this.tween.stop()
         this.moving(direction)
         return
       }
@@ -39,33 +43,32 @@
     moving: function (direction) {
       switch (direction) {
         case 'up': (() => {
-          if (this.y <= 10) {
-            this.y = 10
+          if (this.y <= BG_CORNER.top) {
+            this.y = BG_CORNER.top
           } else {
             this.y -= this.speed
           }
         })()
         break
         case 'left': (() => {
-          if (this.x <= 55) {
-            this.x = 55
+          if (this.x <= BG_CORNER.left) {
+            this.x = BG_CORNER.left
           } else {
             this.x -= this.speed
           }
         })()
         break
         case 'right': (() => {
-          if (this.x >= 1065) {
-            this.x = 1065
+          if (this.x >= BG_CORNER.right) {
+            this.x = BG_CORNER.right
           } else {
             this.x += this.speed
           }
         })()
         break
         case 'down': (() => {
-          console.log(this.y)
-          if (this.y >= 1040) {
-            this.y = 1040
+          if (this.y >= BG_CORNER.bottom) {
+            this.y = BG_CORNER.bottom
           } else {
             this.y += this.speed
           }
@@ -83,8 +86,9 @@
       console.log(this)
 
       this.rotation = 0;
-      this.interval = 20;
+      this.interval = 10;
       this.play();
+      // If this is not set, the character will not be able to move. like engine bug
       this.tween = Hilo.Tween.to(this, {
         y: this.y + 0.01,
       }, {

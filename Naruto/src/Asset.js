@@ -47,6 +47,7 @@
       // var h = 80
       this.bg = this.queue.getContent('bg')
       this.door = this.queue.getContent('door')
+      this.treasure = this.queue.getContent('treasure')
 
       this.roleAtlas = new Hilo.TextureAtlas({
         image: this.queue.getContent('role'),
@@ -78,11 +79,9 @@
           right: [8, 9, 10, 11],
           up: [12, 13, 14, 15],
         },
-        width: 100,
-        height: 200,
       });
 
-      this.roleAtlas1 = new Hilo.TextureAtlas({
+      this.roleMaxAtlas = new Hilo.TextureAtlas({
         image: this.queue.getContent('role3'),
         frames: [
           [0, 0, w, h],
@@ -112,6 +111,17 @@
           right: [8, 9, 10, 11],
           up: [12, 13, 14, 15],
         }
+      });
+
+      this.bgAtlas = new Hilo.TextureAtlas({
+        image: this.queue.getContent('bg2'),
+        frames: {
+          frameWidth: 256,
+          frameHeight: 300,
+          numFrames: 5
+        },
+        width: 256,
+        height: 300,
       });
 
       this.queue.off('complete');
