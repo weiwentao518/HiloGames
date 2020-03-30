@@ -16,8 +16,7 @@
 
     bg: null,
     ground: null,
-    bird: null,
-    holdbacks: null,
+    role: null,
     gameReadyScene: null,
     gameOverScene: null,
 
@@ -31,12 +30,12 @@
     },
 
     initStage: function () {
-      this.width = Math.min(innerWidth, 450) * 2;
-      this.height = Math.min(innerHeight, 750) * 2;
+      this.width = Math.min(10000, 900) * 2;
+      this.height = Math.min(10000, 600) * 2;
       this.scale = 0.5;
 
       //舞台画布
-      var renderType = location.search.indexOf('dom') !== -1 ? 'dom' : 'canvas';
+      var renderType = location.search.indexOf('dom') != -1 ? 'dom' : 'canvas';
 
       //舞台
       this.stage = new Hilo.Stage({
@@ -56,31 +55,30 @@
 
       //绑定交互事件
       this.stage.enableDOMEvent(Hilo.event.POINTER_START, true);
-      this.stage.on(Hilo.event.POINTER_START, this.onUserInput.bind(this));
+      // this.stage.on(Hilo.event.POINTER_START, this.onUserInput.bind(this));
 
       //Space键控制
-      if (document.addEventListener) {
-        document.addEventListener('keydown', function (e) {
-          if (e.keyCode === 32) this.onUserInput(e);
-        }.bind(this));
-      } else {
-        document.attachEvent('onkeydown', function (e) {
-          if (e.keyCode === 32) this.onUserInput(e);
-        }.bind(this));
-      }
+      // if (document.addEventListener) {
+      //   document.addEventListener('keydown', function (e) {
+      //     if (e.keyCode === 32) this.onUserInput(e);
+      //   }.bind(this));
+      // } else {
+      //   document.attachEvent('onkeydown', function (e) {
+      //     if (e.keyCode === 32) this.onUserInput(e);
+      //   }.bind(this));
+      // }
 
       //舞台更新
       this.stage.onUpdate = this.onUpdate.bind(this);
 
       //初始化
       this.initBackground();
-      this.initScenes();
-      this.initHoldbacks();
-      this.initBird();
-      this.initCurrentScore();
+      // this.initScenes();
+      this.initRole();
+      // this.initCurrentScore();
 
       //准备游戏
-      this.gameReady();
+      // this.gameReady();
     },
 
     initBackground: function () {
@@ -95,6 +93,7 @@
         scaleX: this.width / bgImg.width,
         scaleY: this.height / bgImg.height
       }).addTo(this.stage);
+      return
 
       //地面
       var groundImg = this.asset.ground;
@@ -115,39 +114,6 @@
         duration: 400,
         loop: true
       });
-    },
-
-    initCurrentScore: function () {
-      //当前分数
-      this.currentScore = new Hilo.BitmapText({
-        id: 'score',
-        glyphs: this.asset.numberGlyphs,
-        textAlign: 'center'
-      }).addTo(this.stage);
-
-      //设置当前分数的位置
-      this.currentScore.x = this.width - this.currentScore.width >> 1;
-      this.currentScore.y = 180;
-    },
-
-    initBird: function () {
-      this.bird = new game.Bird({
-        id: 'bird',
-        atlas: this.asset.birdAtlas,
-        startX: 100,
-        startY: this.height >> 1,
-        groundY: this.ground.y - 12
-      }).addTo(this.stage, this.ground.depth - 1);
-    },
-
-    initHoldbacks: function () {
-      this.holdbacks = new game.Holdbacks({
-        id: 'holdbacks',
-        image: this.asset.holdback,
-        height: this.height,
-        startX: this.width + 200,
-        groundY: this.ground.y
-      }).addTo(this.stage, this.ground.depth - 1);
     },
 
     initScenes: function () {
@@ -176,29 +142,31 @@
       }.bind(this));
     },
 
-    onUserInput: function (e) {
-      if (this.state !== 'over') {
-        //启动游戏场景
-        if (this.state !== 'playing') this.gameStart();
-        //控制小鸟往上飞
-        this.bird.startFly();
-      }
+    initRole: function () {
+      this.role = new game.Role({
+        id: 'role',
+        atlas: this.asset.roleAtlas,
+        startX: 500,
+        startY: 500,
+        // groundY: this.ground.y - 12
+      }).addTo(this.stage, 1);
+      this.role.getReady();
     },
 
     onUpdate: function (delta) {
-      if (this.state === 'ready') {
-        return;
-      }
+      // if (this.state === 'ready') {
+      //   return;
+      // }
 
-      if (this.bird.isDead) {
-        this.gameOver();
-      } else {
-        this.currentScore.setText(this.calcScore());
-        //碰撞检测
-        if (this.holdbacks.checkCollision(this.bird)) {
-          this.gameOver();
-        }
-      }
+      // if (this.role.isDead) {
+      //   this.gameOver();
+      // } else {
+      //   this.currentScore.setText(this.calcScore());
+      //   //碰撞检测
+      //   if (this.holdbacks.checkCollision(this.role)) {
+      //     this.gameOver();
+      //   }
+      // }
     },
 
     gameReady: function () {
@@ -209,7 +177,7 @@
       this.currentScore.setText(this.score);
       this.gameReadyScene.visible = true;
       this.holdbacks.reset();
-      this.bird.getReady();
+      this.role.getReady();
     },
 
     gameStart: function () {
@@ -225,31 +193,13 @@
         //停止障碍的移动
         this.holdbacks.stopMove();
         //小鸟跳转到第一帧并暂停
-        this.bird.goto(0, true);
+        this.role.goto(0, true);
         //隐藏屏幕中间显示的分数
         this.currentScore.visible = false;
         //显示结束场景
         this.gameOverScene.show('哈哈哈', this.saveBestScore());
       }
     },
-
-    calcScore: function () {
-      var count = this.holdbacks.calcPassThrough(this.bird.x);
-      return this.score = count;
-    },
-
-    saveBestScore: function () {
-      var score = this.score,
-        best = 0;
-      if (Hilo.browser.supportStorage) {
-        best = parseInt(localStorage.getItem('hilo-flappy-best-score')) || 0;
-      }
-      if (score > best) {
-        best = score;
-        localStorage.setItem('hilo-flappy-best-score', score);
-      }
-      return best;
-    }
   };
 
 })();
