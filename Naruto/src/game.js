@@ -177,7 +177,7 @@
       if (hitTestRectangle(this.role, this.treasure)) {
         // If the treasure is touching the explorer, center it over the explorer
         this.treasure.x = this.role.x + 15;
-        this.treasure.y = this.role.y + -10;
+        this.treasure.y = this.role.y - 15;
       }
 
       if (hitTestRectangle(this.treasure, this.door)) {
