@@ -7,7 +7,7 @@
 
       this.width = 70
       this.height = 90
-      this.speed = 10
+      this.speed = 15
       this.direction = 'standing'
 
       this.atlas = props.atlas
@@ -23,6 +23,7 @@
         return
       }
 
+      this.moving(direction)
       this.direction = direction
 
       this.clearFrame()
