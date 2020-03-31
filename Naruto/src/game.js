@@ -131,6 +131,25 @@
         width: 40,
         height: 40,
       }).addTo(this.stage);
+
+      // 血槽：先画一个空血槽，再画一个血槽
+      new Hilo.Bitmap({
+        id: 'bloodEmpty',
+        image: this.asset.bloodEmpty,
+        x: 800,
+        y: 10,
+        width: 350,
+        height: 50,
+      }).addTo(this.stage)
+
+      this.blood = new Hilo.Bitmap({
+        id: 'blood',
+        image: this.asset.bloodFull,
+        x: 830,
+        y: 20,
+        width: 285,
+        height: 30,
+      }).addTo(this.stage)
     },
 
     initScenes: function () {
@@ -182,6 +201,8 @@
 
       if (hitTestRectangle(this.treasure, this.door)) {
         console.log('你赢了！')
+        // this.blood.width -= 10
+        this.blood.setImage(this.asset.bloodFull, [0, 0, 200, 33])
       }
     },
 

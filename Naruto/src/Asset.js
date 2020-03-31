@@ -36,6 +36,14 @@
           id: 'treasure',
           src: 'images/treasure.png'
         },
+        {
+          id: 'bloodEmpty',
+          src: 'images/blood-empty.png'
+        },
+        {
+          id: 'bloodFull',
+          src: 'images/blood-full.png'
+        }
       ];
 
       this.queue = new Hilo.LoadQueue();
@@ -52,6 +60,8 @@
       this.bg = this.queue.getContent('bg')
       this.door = this.queue.getContent('door')
       this.treasure = this.queue.getContent('treasure')
+      this.bloodFull = this.queue.getContent('bloodFull')
+      this.bloodEmpty = this.queue.getContent('bloodEmpty')
 
       this.roleAtlas = new Hilo.TextureAtlas({
         image: this.queue.getContent('role'),
