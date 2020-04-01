@@ -29,8 +29,8 @@
           src: 'images/door.png'
         },
         {
-          id: 'blob',
-          src: 'images/blob.png'
+          id: 'dog',
+          src: 'images/dog.png'
         },
         {
           id: 'treasure',
@@ -53,79 +53,119 @@
     },
 
     onComplete: function () {
-      var w = 46
-      var h = 62
-      // var w = 70
-      // var h = 80
       this.bg = this.queue.getContent('bg')
       this.door = this.queue.getContent('door')
       this.treasure = this.queue.getContent('treasure')
       this.bloodFull = this.queue.getContent('bloodFull')
       this.bloodEmpty = this.queue.getContent('bloodEmpty')
 
-      this.roleAtlas = new Hilo.TextureAtlas({
-        image: this.queue.getContent('role'),
-        frames: [
-          [0, 0, w, h],
-          [w, 0, w, h],
-          [w * 2, 0, w, h],
-          [w * 3, 0, w, h],
+      this.roleAtlas = (() => {
+        var w = 46
+        var h = 62
+        return new Hilo.TextureAtlas({
+          image: this.queue.getContent('role'),
+          frames: [
+            [0, 0, w, h],
+            [w, 0, w, h],
+            [w * 2, 0, w, h],
+            [w * 3, 0, w, h],
 
-          [0, h, w, h],
-          [w, h, w, h],
-          [w * 2, h, w, h],
-          [w * 3, h, w, h],
+            [0, h, w, h],
+            [w, h, w, h],
+            [w * 2, h, w, h],
+            [w * 3, h, w, h],
 
-          [0, h * 2, w, h],
-          [w, h * 2, w, h],
-          [w * 2, h * 2, w, h],
-          [w * 3, h * 2, w, h],
+            [0, h * 2, w, h],
+            [w, h * 2, w, h],
+            [w * 2, h * 2, w, h],
+            [w * 3, h * 2, w, h],
 
-          [0, h * 3, w, h],
-          [w, h * 3, w, h],
-          [w * 2, h * 3, w, h],
-          [w * 3, h * 3, w, h],
-        ],
-        sprites: {
-          standing: [0],
-          down: [0, 1, 2, 3],
-          left: [4, 5, 6, 7],
-          right: [8, 9, 10, 11],
-          up: [12, 13, 14, 15],
-        },
-      });
+            [0, h * 3, w, h],
+            [w, h * 3, w, h],
+            [w * 2, h * 3, w, h],
+            [w * 3, h * 3, w, h],
+          ],
+          sprites: {
+            standing: [0],
+            down: [0, 1, 2, 3],
+            left: [4, 5, 6, 7],
+            right: [8, 9, 10, 11],
+            up: [12, 13, 14, 15],
+          },
+        })
+      })()
 
-      this.roleMaxAtlas = new Hilo.TextureAtlas({
-        image: this.queue.getContent('role3'),
-        frames: [
-          [0, 0, w, h],
-          [w, 0, w, h],
-          [w * 2, 0, w, h],
-          [w * 3, 0, w, h],
+      this.roleMaxAtlas = (() => {
+        var w = 70
+        var h = 80
+        return new Hilo.TextureAtlas({
+          image: this.queue.getContent('role3'),
+          frames: [
+            [0, 0, w, h],
+            [w, 0, w, h],
+            [w * 2, 0, w, h],
+            [w * 3, 0, w, h],
 
-          [0, h, w, h],
-          [w, h, w, h],
-          [w * 2, h, w, h],
-          [w * 3, h, w, h],
+            [0, h, w, h],
+            [w, h, w, h],
+            [w * 2, h, w, h],
+            [w * 3, h, w, h],
 
-          [0, h * 2, w + 2, h - 21],
-          [w, h * 2, w + 2, h - 21],
-          [w * 2, h * 2, w + 2, h - 21],
-          [w * 3, h * 2, w + 2, h - 21],
+            [0, h * 2, w + 2, h - 21],
+            [w, h * 2, w + 2, h - 21],
+            [w * 2, h * 2, w + 2, h - 21],
+            [w * 3, h * 2, w + 2, h - 21],
 
-          [0, h * 2.8, w + 5, h],
-          [w, h * 2.8, w + 5, h],
-          [w * 2, h * 2.8, w + 5, h],
-          [w * 3, h * 2.8, w + 5, h],
-        ],
-        sprites: {
-          standing: [0],
-          down: [0, 1, 2, 3],
-          left: [4, 5, 6, 7],
-          right: [8, 9, 10, 11],
-          up: [12, 13, 14, 15],
-        }
-      });
+            [0, h * 2.8, w + 5, h],
+            [w, h * 2.8, w + 5, h],
+            [w * 2, h * 2.8, w + 5, h],
+            [w * 3, h * 2.8, w + 5, h],
+          ],
+          sprites: {
+            standing: [0],
+            down: [0, 1, 2, 3],
+            left: [4, 5, 6, 7],
+            right: [8, 9, 10, 11],
+            up: [12, 13, 14, 15],
+          }
+        })
+      })()
+
+      this.dogAtlas = (() => {
+        var w = 63
+        var h = 60
+        return new Hilo.TextureAtlas({
+          image: this.queue.getContent('dog'),
+          frames: [
+            [0, 0, w, h],
+            [w, 0, w, h],
+            [w * 2, 0, w, h],
+            [w * 3, 0, w, h],
+
+            [0, h, w, h],
+            [w, h, w, h],
+            [w * 2, h, w, h],
+            [w * 3, h, w, h],
+
+            [0, h * 2, w, h],
+            [w, h * 2, w, h],
+            [w * 2, h * 2, w, h],
+            [w * 3, h * 2, w, h],
+
+            [0, h * 3, w, h],
+            [w, h * 3, w, h],
+            [w * 2, h * 3, w, h],
+            [w * 3, h * 3, w, h],
+          ],
+          sprites: {
+            standing: [0],
+            down: [0, 1, 2, 3],
+            left: [4, 5, 6, 7],
+            right: [8, 9, 10, 11],
+            up: [12, 13, 14, 15],
+          },
+        })
+      })()
 
       var number = this.queue.get('number').content
       this.numberGlyphs = {

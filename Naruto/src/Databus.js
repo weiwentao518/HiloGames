@@ -2,6 +2,8 @@
   let instance
 
   var Databus = window.Databus = Hilo.Class.create({
+    Mixes: Hilo.EventMixin,
+
     constructor: function() {
       if (instance) return instance
 
@@ -10,13 +12,15 @@
         top: 10,
         left: 55,
         right: 1065,
-        bottom: 1040
+        bottom: 1040,
+        width: 1010,
+        height: 1030,
       }
 
       // this.reset()
     },
 
-    //The `hitTestRectangle` function
+    // 碰撞检测
     hitTestRectangle(r1, r2) {
 
       //Define the variables we'll need to calculate
@@ -66,6 +70,53 @@
 
       //`hit` will be either `true` or `false`
       return hit;
+    },
+
+    // 随机位置
+    randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    },
+
+    // 随机方向
+    randomDirection() {
+      var directionMap = {
+        0: 'up',
+        1: 'left',
+        2: 'right',
+        3: 'down',
+      }
+      return directionMap[~~(Math.random() * 4)]
+    },
+
+    contain(sprite, container) {
+
+      let collision = undefined
+
+      // Left
+      if (sprite.x < container.left) {
+        sprite.x = container.left
+        collision = "left"
+      }
+
+      // Top
+      if (sprite.y < container.top) {
+        sprite.y = container.top
+        collision = "top"
+      }
+
+      // Right
+      if (sprite.x + sprite.width > container.width) {
+        sprite.x = container.width - sprite.width
+        collision = "right"
+      }
+
+      // Bottom
+      if (sprite.y + sprite.height > container.height) {
+        sprite.y = container.height - sprite.height
+        collision = "bottom"
+      }
+
+      return collision
     }
   })
-})();
+})()

@@ -3653,11 +3653,6 @@
         }
       }
       return this;
-    },
-
-    setDepth: function (index) {
-      console.warn(this.drawable.image.style)
-      this.drawable.image.style.zIndex = index
     }
   });
 
