@@ -9,12 +9,13 @@
 
       this.width = 70
       this.height = 90
-      this.pivotX = this.width / 2
-      this.pivotY = this.height / 2
-      this.speed = 12
+      // this.pivotX = this.width / 2
+      // this.pivotY = this.height / 2
       this.isDead = false
       this.direction = 'standing'
+      this.background = '#ff0'
 
+      this.speed = props.speed || 12
       this.atlas = props.atlas
       this.startX = props.startX // 起始x坐标
       this.startY = props.startY // 起始y坐标
@@ -93,9 +94,9 @@
     onUpdate: function () {
       if (this.isDead) {
         this.tween = Hilo.Tween.to(this, {
-          rotation: -90,
+          rotation: -30,
         }, {
-          duration: 300,
+          duration: 200,
           reverse: false,
           loop: false
         })

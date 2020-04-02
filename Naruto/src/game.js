@@ -129,7 +129,7 @@
       this.door = new Hilo.Bitmap({
         id: 'door',
         image: this.asset.door,
-        x: 175,
+        x: 125,
         y: 12,
         width: 50,
         height: 60,
@@ -200,7 +200,7 @@
         scaleY: 0.5,
       }).addTo(this.stage)
 
-      this.door = new Hilo.Bitmap({
+      new Hilo.Bitmap({
         id: 'scoreTag',
         image: this.asset.scoreTag,
         x: 270,
@@ -218,6 +218,7 @@
       this.role = new game.Role({
         id: 'role',
         atlas: this.asset.roleAtlas,
+        speed: 12 + this.level,
         startX: 100,
         startY: this.height / 2 - 20,
       }).addTo(this.stage, 3)
@@ -245,28 +246,56 @@
     onUpdate: function (delta) {
       if (this.state !== 'playing') return
 
-      if (hitTestRectangle(this.role, this.treasure) || this.catching) {
+      if (hitTestRectangle(this.role, this.treasure)) {
         // If the treasure is touching the explorer, center it over the explorer
         this.catching = true
-        this.treasure.x = this.role.x - 20
-        this.treasure.y = this.role.y - 70
+        this.treasure.x = this.role.x + 15
+        this.treasure.y = this.role.y - 20
+      }
+
+      const roleRect = {
+        ...this.role,
+        x: this.role.x + 10,
+        y: this.role.y + 10,
+        width: this.role.width - 20,
+        height: this.role.height - 20,
       }
 
       this.enemys.forEach(enemy => {
-        if (hitTestRectangle(this.role, {...enemy, x: enemy.x + 100, y: enemy.y + 100, width: -20, height: 0}) && !this.role.isInvincible) {
+        const enemyRect = {
+          ...enemy,
+          x: enemy.x + 20,
+          y: enemy.y + 30,
+          width: enemy.width - 30,
+          height: enemy.height - 30
+        }
+        if (hitTestRectangle(this.role, enemy) && !this.role.isInvincible) {
           // If the treasure is touching the explorer, center it over the explorer
           Databus.fire('beInjured', this.role)
-          this.catching = false
           this.setBlood(-enemy.hurt)
+
+          if (this.catching) {
+            const { x, y } = this.treasure
+            this.tween = Hilo.Tween.to(this.treasure, {
+              x: x + 100,
+              y: y + 100,
+            }, {
+              duration: 200,
+              reverse: false,
+              loop: false
+            })
+            this.tween.start()
+            this.catching = false
+          }
         }
       })
 
-      if (hitTestRectangle({ ...this.treasure, x: this.treasure.x + 80, y: this.treasure.y + 40 }, { ...this.door, width: 40,})) {
+      if (hitTestRectangle(this.treasure, this.door)) {
+        console.log('你赢了！')
         this.score += 10
         this.currentScore.setText(this.score)
 
         this.nextLevel()
-        // removeFromParent
       }
     },
 
@@ -300,7 +329,7 @@
     },
 
     gameStart: function () {
-      this.state = 'playing';
+      this.state = 'playing'
       // this.gameReadyScene.visible = false;
       // this.holdbacks.startMove();
     },
@@ -309,6 +338,7 @@
       this.state = 'next'
       this.level += 1
       this.enemyAmount += 1
+      this.catching = false
       this.ticker.stop()
       this.ticker.removeTick(Hilo.Tween)
       this.ticker.removeTick(this.stage)

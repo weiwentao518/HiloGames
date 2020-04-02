@@ -13,6 +13,7 @@
       this.hurt = props.hurt || 10
       this.speed = props.speed || 12
       this.direction = props.direction || 'standing'
+      this.background = '#0ff'
 
       this.atlas = props.atlas
       this.startX = props.startX // 起始x坐标
@@ -46,7 +47,7 @@
       this.x = this.startX
       this.y = this.startY
       this.rotation = 0
-      this.interval = 6
+      this.interval = 8
       this.play()
     },
 

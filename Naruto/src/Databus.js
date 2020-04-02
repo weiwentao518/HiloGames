@@ -9,65 +9,72 @@
 
       instance = this
       this.BG_CORNER = {
-        top: 50,
-        left: 100,
-        right: 1100,
-        bottom: 1085,
+        top: 10,
+        left: 55,
+        right: 1065,
+        bottom: 1040,
       }
 
       // this.reset()
     },
 
     // 碰撞检测
-    hitTestRectangle(r1, r2) {
+    hitTestRectangle(rect1, rect2) {
 
-      //Define the variables we'll need to calculate
-      let hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
+      return (
+        rect1.x < rect2.x + rect2.width &&
+        rect1.x + rect1.width > rect2.x &&
+        rect1.y < rect2.y + rect2.height &&
+        rect1.height + rect1.y > rect2.y
+      )
 
-      //hit will determine whether there's a collision
-      hit = false;
+      // //Define the variables we'll need to calculate
+      // let hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
 
-      //Find the center points of each sprite
-      r1.centerX = r1.x + r1.width / 2;
-      r1.centerY = r1.y + r1.height / 2;
-      r2.centerX = r2.x + r2.width / 2;
-      r2.centerY = r2.y + r2.height / 2;
+      // //hit will determine whether there's a collision
+      // hit = false;
 
-      //Find the half-widths and half-heights of each sprite
-      r1.halfWidth = r1.width / 2;
-      r1.halfHeight = r1.height / 2;
-      r2.halfWidth = r2.width / 2;
-      r2.halfHeight = r2.height / 2;
+      // //Find the center points of each sprite
+      // r1.centerX = r1.x + r1.width / 2;
+      // r1.centerY = r1.y + r1.height / 2;
+      // r2.centerX = r2.x + r2.width / 2;
+      // r2.centerY = r2.y + r2.height / 2;
 
-      //Calculate the distance vector between the sprites
-      vx = r1.centerX - r2.centerX;
-      vy = r1.centerY - r2.centerY;
+      // //Find the half-widths and half-heights of each sprite
+      // r1.halfWidth = r1.width / 2;
+      // r1.halfHeight = r1.height / 2;
+      // r2.halfWidth = r2.width / 2;
+      // r2.halfHeight = r2.height / 2;
 
-      //Figure out the combined half-widths and half-heights
-      combinedHalfWidths = r1.halfWidth + r2.halfWidth;
-      combinedHalfHeights = r1.halfHeight + r2.halfHeight;
+      // //Calculate the distance vector between the sprites
+      // vx = r1.centerX - r2.centerX;
+      // vy = r1.centerY - r2.centerY;
 
-      //Check for a collision on the x axis
-      if (Math.abs(vx) < combinedHalfWidths) {
+      // //Figure out the combined half-widths and half-heights
+      // combinedHalfWidths = r1.halfWidth + r2.halfWidth;
+      // combinedHalfHeights = r1.halfHeight + r2.halfHeight;
 
-        //A collision might be occuring. Check for a collision on the y axis
-        if (Math.abs(vy) < combinedHalfHeights) {
+      // //Check for a collision on the x axis
+      // if (Math.abs(vx) < combinedHalfWidths) {
 
-          //There's definitely a collision happening
-          hit = true;
-        } else {
+      //   //A collision might be occuring. Check for a collision on the y axis
+      //   if (Math.abs(vy) < combinedHalfHeights) {
 
-          //There's no collision on the y axis
-          hit = false;
-        }
-      } else {
+      //     //There's definitely a collision happening
+      //     hit = true;
+      //   } else {
 
-        //There's no collision on the x axis
-        hit = false;
-      }
+      //     //There's no collision on the y axis
+      //     hit = false;
+      //   }
+      // } else {
 
-      //`hit` will be either `true` or `false`
-      return hit;
+      //   //There's no collision on the x axis
+      //   hit = false;
+      // }
+
+      // //`hit` will be either `true` or `false`
+      // return hit;
     },
 
     // 随机位置
