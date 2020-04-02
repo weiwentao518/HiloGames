@@ -2,8 +2,6 @@
   var Databus = new window.Databus()
   var { BG_CORNER } = Databus
 
-  console.log(Databus)
-
   var Role = ns.Role = Hilo.Class.create({
     Extends: Hilo.Sprite,
     constructor: function (props) {
