@@ -18,15 +18,17 @@
     height: 0,
 
     asset: null,
-    stage: null,
+    stage: null, // 舞台
+    state: null, // 状态机：ready 准备、playing 游戏中、over 结束
     ticker: null,
-    state: null,
     score: 0, // 分数
     level: 1, // 关卡
+    enemys: [], // 敌人列表
+    enemyAmount: 5, // 敌人数量
+    bloodAmount: 100, // 初始血量：100%
 
     bg: null,
     role: null,
-    bloodAmount: 100,
     gameReadyScene: null,
     gameOverScene: null,
 
@@ -65,19 +67,17 @@
       this.ticker.addTick(this.stage)
       this.ticker.start(true)
 
-      //绑定交互事件
+      // 绑定交互事件
+      this.onKeydown = this.onKeydown.bind(this)
+      this.onKeyup = this.onKeyup.bind(this)
       this.stage.enableDOMEvent(Hilo.event.POINTER_START, true)
       // this.stage.on(Hilo.event.POINTER_START, this.onUserInput.bind(this))
 
       // WASD键控制
       if (document.addEventListener) {
-        document.addEventListener('keydown', function (e) {
-          this.onKeydown(e)
-        }.bind(this))
+        document.addEventListener('keydown', this.onKeydown)
 
-        document.addEventListener('keyup', function (e) {
-          this.onKeyup(e)
-        }.bind(this))
+        document.addEventListener('keyup', this.onKeyup)
       }
 
       //舞台更新
@@ -92,6 +92,7 @@
 
       //准备游戏
       // this.gameReady()
+      this.gameStart()
     },
 
     onKeydown: function (e) {
@@ -193,7 +194,7 @@
       this.currentScore = new Hilo.BitmapText({
         id: 'score',
         glyphs: this.asset.numberGlyphs,
-        text: '0',
+        text: this.score || '0',
         textAlign: 'center',
         scaleX: 0.5,
         scaleY: 0.5,
@@ -209,7 +210,7 @@
       }).addTo(this.stage)
 
       //设置当前分数的位置
-      this.currentScore.x = 400
+      this.currentScore.x = 450
       this.currentScore.y = 10
     },
 
@@ -224,20 +225,26 @@
     },
 
     initEnemy: function () {
-      this.dog = new game.Enemy({
-        id: 'dog',
-        atlas: this.asset.dogAtlas,
-        speed: 5,
-        hurt: 10,
-        direction: randomDirection(),
-        startX: randomInt(200, BG_CORNER.right),
-        startY: randomInt(60, BG_CORNER.bottom),
-      }).addTo(this.stage, 3)
 
-      this.dog.getReady()
+      for (let i = 0; i < this.enemyAmount; i++) {
+        const dog = new game.Enemy({
+          id: 'dog',
+          atlas: this.asset.dogAtlas,
+          speed: 5 + this.level,
+          hurt: 10,
+          direction: randomDirection(),
+          startX: randomInt(200, BG_CORNER.right),
+          startY: randomInt(60, BG_CORNER.bottom),
+        }).addTo(this.stage, 3)
+
+        dog.getReady()
+        this.enemys.push(dog)
+      }
     },
 
     onUpdate: function (delta) {
+      if (this.state !== 'playing') return
+
       if (hitTestRectangle(this.role, this.treasure) || this.catching) {
         // If the treasure is touching the explorer, center it over the explorer
         this.catching = true
@@ -245,20 +252,21 @@
         this.treasure.y = this.role.y - 70
       }
 
-      if (hitTestRectangle(this.role, this.dog) && !this.role.isInvincible) {
-        // If the treasure is touching the explorer, center it over the explorer
-        Databus.fire('beInjured', this.role)
-        this.catching = false
-        this.setBlood(-this.dog.hurt)
-      }
+      this.enemys.forEach(enemy => {
+        if (hitTestRectangle(this.role, {...enemy, x: enemy.x + 100, y: enemy.y + 100, width: -20, height: 0}) && !this.role.isInvincible) {
+          // If the treasure is touching the explorer, center it over the explorer
+          Databus.fire('beInjured', this.role)
+          this.catching = false
+          this.setBlood(-enemy.hurt)
+        }
+      })
 
-      if (hitTestRectangle({ ...this.treasure, x: this.treasure.x + 80 }, { ...this.door, width: 40,})) {
-        console.log('你赢了！')
-        // this.blood.width -= 10
+      if (hitTestRectangle({ ...this.treasure, x: this.treasure.x + 80, y: this.treasure.y + 40 }, { ...this.door, width: 40,})) {
         this.score += 10
-        // this.state =
-        this.setBlood(100)
         this.currentScore.setText(this.score)
+
+        this.nextLevel()
+        // removeFromParent
       }
     },
 
@@ -293,8 +301,23 @@
 
     gameStart: function () {
       this.state = 'playing';
-      this.gameReadyScene.visible = false;
-      this.holdbacks.startMove();
+      // this.gameReadyScene.visible = false;
+      // this.holdbacks.startMove();
+    },
+
+    nextLevel: function () {
+      this.state = 'next'
+      this.level += 1
+      this.enemyAmount += 1
+      this.ticker.stop()
+      this.ticker.removeTick(Hilo.Tween)
+      this.ticker.removeTick(this.stage)
+      this.role.removeFromParent()
+      this.enemys.forEach(i => i.removeFromParent())
+      // this.stage.removeAllChildren()
+      document.removeEventListener('keydown', this.onKeydown)
+      document.removeEventListener('keyup', this.onKeyup)
+      this.initStage()
     },
 
     gameOver: function () {

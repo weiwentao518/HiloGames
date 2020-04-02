@@ -10,8 +10,6 @@
         src: '/naruto/audios/background.mp3',
       })
 
-      console.log(this.background)
-
       this.background.load()
       this.background.play()
     },
