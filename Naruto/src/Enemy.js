@@ -48,15 +48,6 @@
       this.rotation = 0
       this.interval = 6
       this.play()
-
-      // If this is not set, the character will not be able to move. like engine bug
-      // this.tween = Hilo.Tween.to(this, {
-      //   y: this.y + 0.01,
-      // }, {
-      //   duration: 1000,
-      //   reverse: true,
-      //   loop: true
-      // })
     },
 
     onUpdate: function () {

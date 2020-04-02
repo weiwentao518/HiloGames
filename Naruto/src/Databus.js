@@ -9,12 +9,10 @@
 
       instance = this
       this.BG_CORNER = {
-        top: 10,
-        left: 55,
-        right: 1065,
-        bottom: 1040,
-        width: 1010,
-        height: 1030,
+        top: 50,
+        left: 100,
+        right: 1100,
+        bottom: 1085,
       }
 
       // this.reset()

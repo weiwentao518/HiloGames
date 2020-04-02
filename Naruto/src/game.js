@@ -21,7 +21,8 @@
     stage: null,
     ticker: null,
     state: null,
-    score: 0,
+    score: 0, // 分数
+    level: 1, // 关卡
 
     bg: null,
     role: null,
@@ -36,6 +37,8 @@
         this.initStage()
       }.bind(this))
       this.asset.load()
+
+      this.audio = new game.Audio()
     },
 
     initStage: function () {
@@ -85,7 +88,7 @@
       // this.initScenes()
       this.initRole()
       this.initEnemy()
-      // this.initCurrentScore()
+      this.initCurrentScore()
 
       //准备游戏
       // this.gameReady()
@@ -125,8 +128,8 @@
       this.door = new Hilo.Bitmap({
         id: 'door',
         image: this.asset.door,
-        x: 75,
-        y: 10,
+        x: 175,
+        y: 12,
         width: 50,
         height: 60,
       }).addTo(this.stage)
@@ -157,9 +160,6 @@
         x: 832,
         y: 20,
       }).addTo(this.stage)
-
-      console.log(this.blood)
-      this.blood.setImage(this.asset.bloodFull, [0, 0, 315, 30])
     },
 
     initScenes: function () {
@@ -188,6 +188,31 @@
       }.bind(this))
     },
 
+    initCurrentScore: function () {
+      // 当前分数
+      this.currentScore = new Hilo.BitmapText({
+        id: 'score',
+        glyphs: this.asset.numberGlyphs,
+        text: '0',
+        textAlign: 'center',
+        scaleX: 0.5,
+        scaleY: 0.5,
+      }).addTo(this.stage)
+
+      this.door = new Hilo.Bitmap({
+        id: 'scoreTag',
+        image: this.asset.scoreTag,
+        x: 270,
+        y: 8,
+        width: 100,
+        height: 50,
+      }).addTo(this.stage)
+
+      //设置当前分数的位置
+      this.currentScore.x = 400
+      this.currentScore.y = 10
+    },
+
     initRole: function () {
       this.role = new game.Role({
         id: 'role',
@@ -203,6 +228,7 @@
         id: 'dog',
         atlas: this.asset.dogAtlas,
         speed: 5,
+        hurt: 10,
         direction: randomDirection(),
         startX: randomInt(200, BG_CORNER.right),
         startY: randomInt(60, BG_CORNER.bottom),
@@ -212,29 +238,27 @@
     },
 
     onUpdate: function (delta) {
-      if (hitTestRectangle(this.role, this.treasure)) {
+      if (hitTestRectangle(this.role, this.treasure) || this.catching) {
         // If the treasure is touching the explorer, center it over the explorer
-        this.treasure.x = this.role.x + 15
-        this.treasure.y = this.role.y - 15
+        this.catching = true
+        this.treasure.x = this.role.x - 20
+        this.treasure.y = this.role.y - 70
       }
 
       if (hitTestRectangle(this.role, this.dog) && !this.role.isInvincible) {
         // If the treasure is touching the explorer, center it over the explorer
-        // this.role.tween.start()
-        Hilo.Tween.to(this.role, {
-          opacity: 0.3,
-        }, {
-          duration: 300,
-          reverse: true,
-          repeat: 3
-        })
+        Databus.fire('beInjured', this.role)
+        this.catching = false
         this.setBlood(-this.dog.hurt)
       }
 
-      if (hitTestRectangle(this.treasure, this.door)) {
+      if (hitTestRectangle({ ...this.treasure, x: this.treasure.x + 80 }, { ...this.door, width: 40,})) {
         console.log('你赢了！')
         // this.blood.width -= 10
-        this.blood.setImage(this.asset.bloodFull, [0, 0, 200, 33])
+        this.score += 10
+        // this.state =
+        this.setBlood(100)
+        this.currentScore.setText(this.score)
       }
     },
 

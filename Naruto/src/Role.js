@@ -2,6 +2,8 @@
   var Databus = new window.Databus()
   var { BG_CORNER } = Databus
 
+  console.log(Databus)
+
   var Role = ns.Role = Hilo.Class.create({
     Extends: Hilo.Sprite,
     constructor: function (props) {
@@ -9,6 +11,8 @@
 
       this.width = 70
       this.height = 90
+      this.pivotX = this.width / 2
+      this.pivotY = this.height / 2
       this.speed = 12
       this.isDead = false
       this.direction = 'standing'
@@ -17,12 +21,13 @@
       this.startX = props.startX // 起始x坐标
       this.startY = props.startY // 起始y坐标
       this.addFrame(this.atlas.getSprite('standing'))
+
+      // 通过Databus监听传入的受伤事件🤕️
+      Databus.on('beInjured', this.onBeInjured.bind(this))
     },
 
     run: function (direction) {
       if (this.direction === direction) {
-        // 清除tween，否则无法y轴移动
-        this.tween && this.tween.stop()
         this.moving(direction)
         return
       }
@@ -85,19 +90,9 @@
       this.rotation = 0
       this.interval = 6
       this.play()
-
-      // If this is not set, the character will not be able to move. like engine bug
-      // this.tween = Hilo.Tween.to(this, {
-      //   y: this.y + 0.01,
-      // }, {
-      //   duration: 1000,
-      //   reverse: true,
-      //   loop: true
-      // })
     },
 
     onUpdate: function () {
-      // TODO
       if (this.isDead) {
         this.tween = Hilo.Tween.to(this, {
           rotation: -90,
@@ -107,7 +102,19 @@
           loop: false
         })
       }
-    }
-  });
+    },
 
-})(window.game);
+    // 监听game.js 传入的受伤事件🤕️
+    onBeInjured: function () {
+      this.tween = Hilo.Tween.to(this, {
+        alpha: 0,
+      }, {
+        repeat: 3,
+        duration: 50,
+        reverse: true
+      })
+      this.tween.start()
+    }
+  })
+
+})(window.game)

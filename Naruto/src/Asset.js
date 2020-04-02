@@ -21,6 +21,10 @@
           src: 'images/role-third.png'
         },
         {
+          id: 'score-tag',
+          src: 'images/score-tag.png'
+        },
+        {
           id: 'number',
           src: 'images/number.png'
         },
@@ -56,6 +60,7 @@
       this.bg = this.queue.getContent('bg')
       this.door = this.queue.getContent('door')
       this.treasure = this.queue.getContent('treasure')
+      this.scoreTag = this.queue.getContent('score-tag')
       this.bloodFull = this.queue.getContent('bloodFull')
       this.bloodEmpty = this.queue.getContent('bloodEmpty')
 
