@@ -2,52 +2,115 @@
 
   var OverScene = ns.OverScene = Hilo.Class.create({
     Extends: Hilo.Container,
-    constructor: function (properties) {
-      OverScene.superclass.constructor.call(this, properties);
-      this.init(properties);
+    constructor: function (props) {
+      OverScene.superclass.constructor.call(this, props)
+      this.init(props)
     },
 
-    init: function (properties) {
-      var board = new Hilo.Bitmap({
-        id: 'board',
-        image: properties.image,
-        rect: [0, 0, 590, 298]
-      });
+    init: function (props) {
+      var background = new Hilo.Bitmap({
+        id: 'reStartBtn',
+        image: props.images.background,
+        width: ns.width,
+        height: ns.height,
+        alpha: 0
+      })
 
-      var gameover = new Hilo.Bitmap({
-        id: 'gameover',
-        image: properties.image,
-        rect: [0, 298, 508, 158]
-      });
+      var fail = new Hilo.Bitmap({
+        id: 'fail',
+        image: props.images.fail,
+        scaleX: 1.5,
+        scaleY: 1.5,
+        x: 380,
+        y: 100,
+        alpha: 0,
+      })
 
-      var startBtn = new Hilo.Bitmap({
-        id: 'start',
-        image: properties.image,
-        rect: [590, 0, 290, 176]
-      });
+      var scoreBg = new Hilo.Bitmap({
+        id: 'scoreBg',
+        image: props.images.scoreBg,
+        x: 350,
+        y: 400,
+        alpha: 0
+      })
 
-      var gradeBtn = new Hilo.Bitmap({
-        id: 'grade',
-        image: properties.image,
-        rect: [590, 176, 290, 176]
-      });
+      // var scoreText = new Hilo.Bitmap({
+      //   id: 'scoreText',
+      //   image: props.images.scoreText,
+      //   width: 1000,
+      //   height: 2000,
+      //   scaleX: 20,
+      //   scaleY: 20,
+      // })
 
       var scoreLabel = new Hilo.BitmapText({
         id: 'score',
-        glyphs: properties.numberGlyphs,
+        glyphs: props.numberGlyphs,
+        scaleX: 0.8,
+        scaleY: 0.8,
+        letterSpacing: 4,
+        text: 0
+      })
+
+      var reStartBtn = new Hilo.Bitmap({
+        id: 'reStartBtn',
+        image: props.images.button,
+        width: 350,
+        height: 150,
+        x: 420,
+        y: 700,
+      })
+
+      scoreLabel.x = scoreBg.x + 100
+      scoreLabel.y = scoreBg.y + 50
+
+      this.addChild(
+        background,
+        reStartBtn,
+        fail,
+        scoreBg,
+        scoreLabel,
+      )
+    },
+
+    init0: function (props) {
+      var board = new Hilo.Bitmap({
+        id: 'board',
+        image: props.image,
+        rect: [0, 0, 590, 298]
+      })
+
+      var gameover = new Hilo.Bitmap({
+        id: 'gameover',
+        image: props.image,
+        rect: [0, 298, 508, 158]
+      })
+
+      var reStartBtn = new Hilo.Bitmap({
+        id: 'reStartBtn',
+        image: props.button,
+        width: 280,
+        height: 120,
+        x: 100,
+        y: 800,
+      })
+
+      var scoreLabel = new Hilo.BitmapText({
+        id: 'score',
+        glyphs: props.numberGlyphs,
         scaleX: 0.5,
         scaleY: 0.5,
         letterSpacing: 4,
         text: 0
-      });
+      })
 
       var bestLabel = new Hilo.BitmapText({
         id: 'best',
-        glyphs: properties.numberGlyphs,
+        glyphs: props.numberGlyphs,
         scaleX: 0.5,
         scaleY: 0.5,
         letterSpacing: 4
-      });
+      })
 
       var whiteMask = new Hilo.View({
         id: 'mask',
@@ -55,86 +118,53 @@
         height: this.height,
         alpha: 0,
         background: '#fff'
-      });
+      })
 
-      board.x = this.width - board.width >> 1;
-      board.y = this.height - board.height >> 1;
-      gameover.x = this.width - gameover.width >> 1;
-      gameover.y = board.y - gameover.height - 20;
-      startBtn.x = board.x - 5;
-      startBtn.y = board.y + board.height + 20 >> 0;
-      gradeBtn.x = startBtn.x + startBtn.width + 20 >> 0;
-      gradeBtn.y = startBtn.y;
-      scoreLabel.x = board.x + board.width - 140 >> 0;
-      scoreLabel.y = board.y + 90;
-      bestLabel.x = scoreLabel.x;
-      bestLabel.y = scoreLabel.y + 105;
-
-      this.addChild(gameover, board, startBtn, gradeBtn, scoreLabel, bestLabel, whiteMask);
+      this.addChild(gameover, board, reStartBtn, scoreLabel, bestLabel, whiteMask)
     },
 
-    show: function (score, bestScore) {
-      this.visible = true;
-      this.getChildById('score').setText(score);
-      this.getChildById('best').setText(bestScore);
-      this.getChildById('mask').alpha = 1;
+    show: function (score) {
+      this.visible = true
+      this.getChildById('score').setText(score)
+      // this.getChildById('best').setText(bestScore)
 
-      Hilo.Tween.to(this.getChildById('gameover'), {
+      Hilo.Tween.to(this.getChildById('background'), {
         alpha: 1
       }, {
         duration: 100
-      });
-      Hilo.Tween.to(this.getChildById('board'), {
+      })
+      Hilo.Tween.to(this.getChildById('fail'), {
         alpha: 1,
-        y: this.getChildById('board').y - 150
+        y: this.getChildById('fail').y + 150
       }, {
         duration: 200,
         delay: 200
-      });
-      Hilo.Tween.to(this.getChildById('score'), {
+      })
+      Hilo.Tween.to(this.getChildById('scoreBg'), {
         alpha: 1,
-        y: this.getChildById('score').y - 150
+        y: this.getChildById('scoreBg').y + 150
       }, {
         duration: 200,
         delay: 200
-      });
-      Hilo.Tween.to(this.getChildById('best'), {
-        alpha: 1,
-        y: this.getChildById('best').y - 150
-      }, {
-        duration: 200,
-        delay: 200
-      });
-      Hilo.Tween.to(this.getChildById('start'), {
+      })
+      Hilo.Tween.to(this.getChildById('reStartBtn'), {
         alpha: 1
       }, {
         duration: 100,
         delay: 600
-      });
-      Hilo.Tween.to(this.getChildById('grade'), {
-        alpha: 1
-      }, {
-        duration: 100,
-        delay: 600
-      });
-      Hilo.Tween.to(this.getChildById('mask'), {
-        alpha: 0
-      }, {
-        duration: 400
-      });
+      })
     },
 
     hide: function () {
-      this.visible = false;
-      this.getChildById('gameover').alpha = 0;
-      this.getChildById('board').alpha = 0;
-      this.getChildById('score').alpha = 0;
-      this.getChildById('best').alpha = 0;
-      this.getChildById('start').alpha = 0;
-      this.getChildById('grade').alpha = 0;
-      this.getChildById('board').y += 150;
-      this.getChildById('score').y += 150;
-      this.getChildById('best').y += 150;
+      this.visible = false
+      this.getChildById('background').alpha = 0
+      this.getChildById('board').alpha = 0
+      this.getChildById('score').alpha = 0
+      this.getChildById('best').alpha = 0
+      this.getChildById('start').alpha = 0
+      this.getChildById('board').y -= 150
+      this.getChildById('score').y -= 150
+      this.getChildById('best').y -= 150
     }
   });
 

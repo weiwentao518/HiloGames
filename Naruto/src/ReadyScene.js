@@ -2,32 +2,31 @@
 
   var ReadyScene = ns.ReadyScene = Hilo.Class.create({
     Extends: Hilo.Container,
-    constructor: function (properties) {
-      ReadyScene.superclass.constructor.call(this, properties);
-      this.init(properties);
+    constructor: function (props) {
+      ReadyScene.superclass.constructor.call(this, props)
+      this.init(props)
     },
 
-    init: function (properties) {
-      //准备Get Ready!
-      var getready = new Hilo.Bitmap({
-        image: properties.image,
-        rect: [0, 0, 508, 158]
-      });
+    init: function (props) {
+      // background
+      var background = new Hilo.Bitmap({
+        image: props.background,
+        width: props.width,
+        height: props.height,
+      })
 
-      //开始提示tap
-      var tap = new Hilo.Bitmap({
-        image: properties.image,
-        rect: [0, 158, 286, 246]
-      });
+      // 开始按钮
+      var button = new Hilo.Bitmap({
+        id: 'startBtn',
+        image: props.button,
+        width: 280,
+        height: 120,
+        x: 100,
+        y: 800,
+      })
 
-      //确定getready和tap的位置
-      tap.x = this.width - tap.width >> 1;
-      tap.y = this.height - tap.height + 40 >> 1;
-      getready.x = this.width - getready.width >> 1;
-      getready.y = tap.y - getready.height >> 0;
-
-      this.addChild(tap, getready);
+      this.addChild(background, button)
     }
-  });
+  })
 
-})(window.game);
+})(window.game)

@@ -4,7 +4,6 @@
     // Utils
     randomInt,
     randomDirection,
-    hitTestRectangle,
     // 常量
     BG_CORNER,
   } = Databus
@@ -85,14 +84,13 @@
 
       //初始化
       this.initBackground()
-      // this.initScenes()
+      this.initScenes()
       this.initRole()
       this.initEnemy()
       this.initCurrentScore()
 
       //准备游戏
-      // this.gameReady()
-      this.gameStart()
+      this.level === 1 ? this.gameReady() : this.gameStart()
     },
 
     onKeydown: function (e) {
@@ -169,23 +167,33 @@
         id: 'readyScene',
         width: this.width,
         height: this.height,
-        image: this.asset.ready
+        background: this.asset.bgStart,
+        button: this.asset.playBtn
       }).addTo(this.stage)
 
       //结束场景
       this.gameOverScene = new game.OverScene({
         id: 'overScene',
-        width: this.width,
-        height: this.height,
-        image: this.asset.over,
+        images: {
+          fail: this.asset.fail,
+          button: this.asset.playAgainBtn,
+          scoreBg: this.asset.scoreBg,
+          scoreText: this.asset.scoreText,
+          background: this.asset.bgEnd,
+        },
         numberGlyphs: this.asset.numberGlyphs,
         visible: false
       }).addTo(this.stage)
 
-      //绑定开始按钮事件
-      this.gameOverScene.getChildById('start').on(Hilo.event.POINTER_START, function (e) {
+      // 绑定开始按钮事件
+      this.gameReadyScene.getChildById('startBtn').on(Hilo.event.POINTER_START, function (e) {
         e.stopImmediatePropagation && e.stopImmediatePropagation()
-        this.gameReady()
+        this.gameStart()
+      }.bind(this))
+
+      this.gameOverScene.getChildById('reStartBtn').on(Hilo.event.POINTER_START, function (e) {
+        e.stopImmediatePropagation && e.stopImmediatePropagation()
+        this.gameStart()
       }.bind(this))
     },
 
@@ -198,15 +206,17 @@
         textAlign: 'center',
         scaleX: 0.5,
         scaleY: 0.5,
+        visible: false
       }).addTo(this.stage)
 
-      new Hilo.Bitmap({
+      this.scoreTag = new Hilo.Bitmap({
         id: 'scoreTag',
         image: this.asset.scoreTag,
         x: 270,
         y: 8,
         width: 100,
         height: 50,
+        visible: false
       }).addTo(this.stage)
 
       //设置当前分数的位置
@@ -222,7 +232,6 @@
         startX: 100,
         startY: this.height / 2 - 20,
       }).addTo(this.stage, 3)
-      this.role.getReady()
     },
 
     initEnemy: function () {
@@ -246,39 +255,25 @@
     onUpdate: function (delta) {
       if (this.state !== 'playing') return
 
-      if (hitTestRectangle(this.role, this.treasure)) {
+      if (this.role.hitTestObject(this.treasure)) {
         // If the treasure is touching the explorer, center it over the explorer
         this.catching = true
         this.treasure.x = this.role.x + 15
         this.treasure.y = this.role.y - 20
       }
 
-      const roleRect = {
-        ...this.role,
-        x: this.role.x + 10,
-        y: this.role.y + 10,
-        width: this.role.width - 20,
-        height: this.role.height - 20,
-      }
-
       this.enemys.forEach(enemy => {
-        const enemyRect = {
-          ...enemy,
-          x: enemy.x + 20,
-          y: enemy.y + 30,
-          width: enemy.width - 30,
-          height: enemy.height - 30
-        }
-        if (hitTestRectangle(this.role, enemy) && !this.role.isInvincible) {
+        if (enemy.hitTestObject(this.role) && !this.role.isInvincible) {
           // If the treasure is touching the explorer, center it over the explorer
           Databus.fire('beInjured', this.role)
-          this.setBlood(-enemy.hurt)
+          // this.setBlood(-enemy.hurt)
+          this.setBlood(-100)
 
           if (this.catching) {
             const { x, y } = this.treasure
             this.tween = Hilo.Tween.to(this.treasure, {
-              x: x + 100,
-              y: y + 100,
+              x: x + 10,
+              y: y + 10,
             }, {
               duration: 200,
               reverse: false,
@@ -290,12 +285,12 @@
         }
       })
 
-      if (hitTestRectangle(this.treasure, this.door)) {
+      if (this.treasure.hitTestObject(this.door)) {
         console.log('你赢了！')
         this.score += 10
         this.currentScore.setText(this.score)
 
-        this.nextLevel()
+        this.gameNextLevel()
       }
     },
 
@@ -314,27 +309,29 @@
 
       if (next === 0) {
         this.role.isDead = true
+        this.gameOver()
       }
     },
 
     gameReady: function () {
-      this.gameOverScene.hide();
-      this.state = 'ready';
-      this.score = 0;
-      this.currentScore.visible = true;
-      this.currentScore.setText(this.score);
-      this.gameReadyScene.visible = true;
-      this.holdbacks.reset();
-      this.role.getReady();
+      this.state = 'ready'
+      this.score = 0
+      this.scoreTag.visible = false
+      this.currentScore.visible = false
+      this.gameReadyScene.visible = true
+      this.role.getReady()
     },
 
     gameStart: function () {
       this.state = 'playing'
-      // this.gameReadyScene.visible = false;
-      // this.holdbacks.startMove();
+      this.scoreTag.visible = true
+      this.currentScore.visible = true
+      this.currentScore.setText(this.score)
+      this.gameReadyScene.visible = false
+      this.role.getReady()
     },
 
-    nextLevel: function () {
+    gameNextLevel: function () {
       this.state = 'next'
       this.level += 1
       this.enemyAmount += 1
@@ -344,7 +341,7 @@
       this.ticker.removeTick(this.stage)
       this.role.removeFromParent()
       this.enemys.forEach(i => i.removeFromParent())
-      // this.stage.removeAllChildren()
+      this.stage.removeAllChildren()
       document.removeEventListener('keydown', this.onKeydown)
       document.removeEventListener('keyup', this.onKeyup)
       this.initStage()
@@ -352,18 +349,12 @@
 
     gameOver: function () {
       if (this.state !== 'over') {
-        //设置当前状态为结束over
-        this.state = 'over';
-        //停止障碍的移动
-        this.holdbacks.stopMove();
-        //小鸟跳转到第一帧并暂停
-        this.role.goto(0, true);
-        //隐藏屏幕中间显示的分数
-        this.currentScore.visible = false;
-        //显示结束场景
-        this.gameOverScene.show('哈哈哈', this.saveBestScore());
+        this.state = 'over'
+        this.scoreTag.visible = false
+        this.currentScore.visible = false
+        this.gameOverScene.show(this.score)
       }
     },
-  };
+  }
 
 })();

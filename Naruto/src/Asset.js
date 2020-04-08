@@ -13,6 +13,22 @@
           src: 'images/bg.png'
         },
         {
+          id: 'bg-start',
+          src: 'images/bg-start.png'
+        },
+        {
+          id: 'bg-end',
+          src: 'images/bg-end.png'
+        },
+        {
+          id: 'start-button',
+          src: 'images/start-button.png'
+        },
+        {
+          id: 'restart-button.png',
+          src: 'images/restart-button.png'
+        },
+        {
           id: 'role',
           src: 'images/role.png'
         },
@@ -47,20 +63,39 @@
         {
           id: 'bloodFull',
           src: 'images/blood-full.png'
-        }
-      ];
+        },
+        {
+          id: 'fail',
+          src: 'images/fail.png'
+        },
+        {
+          id: 'scoreText',
+          src: 'images/score-text.png'
+        },
+        {
+          id: 'score-bg',
+          src: 'images/score-bg.png'
+        },
+      ]
 
-      this.queue = new Hilo.LoadQueue();
-      this.queue.add(resources);
-      this.queue.on('complete', this.onComplete.bind(this));
-      this.queue.start();
+      this.queue = new Hilo.LoadQueue()
+      this.queue.add(resources)
+      this.queue.on('complete', this.onComplete.bind(this))
+      this.queue.start()
     },
 
     onComplete: function () {
       this.bg = this.queue.getContent('bg')
       this.door = this.queue.getContent('door')
+      this.bgEnd = this.queue.getContent('bg-end')
+      this.bgStart = this.queue.getContent('bg-start')
+      this.playBtn = this.queue.getContent('start-button')
+      this.playAgainBtn = this.queue.getContent('restart-button.png')
+      this.fail = this.queue.getContent('fail')
       this.treasure = this.queue.getContent('treasure')
+      this.scoreBg = this.queue.getContent('score-bg')
       this.scoreTag = this.queue.getContent('score-tag')
+      this.scoreText = this.queue.getContent('score-text')
       this.bloodFull = this.queue.getContent('bloodFull')
       this.bloodEmpty = this.queue.getContent('bloodEmpty')
 

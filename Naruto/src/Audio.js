@@ -7,11 +7,10 @@
       this.background = new Hilo.WebAudio({
         loop: true,
         // autoPlay: true,
-        src: '/naruto/audios/background.mp3',
+        src: '/naruto/audios/bg.mp3',
       })
 
       this.background.load()
-      this.background.play()
     },
   })
 
