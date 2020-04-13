@@ -13,7 +13,7 @@
       // this.pivotY = this.height / 2
       this.isDead = false
       this.direction = 'standing'
-      this.background = '#ff0'
+      // this.background = '#ff0'
 
       this.speed = props.speed || 12
       this.atlas = props.atlas

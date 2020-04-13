@@ -19,9 +19,7 @@
       var button = new Hilo.Bitmap({
         id: 'startBtn',
         image: props.button,
-        width: 280,
-        height: 120,
-        x: 100,
+        x: 20,
         y: 800,
       })
 

@@ -13,7 +13,7 @@
       this.hurt = props.hurt || 10
       this.speed = props.speed || 12
       this.direction = props.direction || 'standing'
-      this.background = '#0ff'
+      // this.background = '#0ff'
 
       this.atlas = props.atlas
       this.startX = props.startX // 起始x坐标

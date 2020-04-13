@@ -2,6 +2,9 @@
 
   var OverScene = ns.OverScene = Hilo.Class.create({
     Extends: Hilo.Container,
+
+    timer: null,
+
     constructor: function (props) {
       OverScene.superclass.constructor.call(this, props)
       this.init(props)
@@ -9,7 +12,7 @@
 
     init: function (props) {
       var background = new Hilo.Bitmap({
-        id: 'reStartBtn',
+        id: 'background',
         image: props.images.background,
         width: ns.width,
         height: ns.height,
@@ -29,8 +32,8 @@
       var scoreBg = new Hilo.Bitmap({
         id: 'scoreBg',
         image: props.images.scoreBg,
-        x: 350,
-        y: 400,
+        x: 800,
+        y: 500,
         alpha: 0
       })
 
@@ -43,13 +46,15 @@
       //   scaleY: 20,
       // })
 
-      var scoreLabel = new Hilo.BitmapText({
+      var score = new Hilo.BitmapText({
         id: 'score',
         glyphs: props.numberGlyphs,
         scaleX: 0.8,
         scaleY: 0.8,
         letterSpacing: 4,
-        text: 0
+        text: 0,
+        alpha: 0,
+        visible: false,
       })
 
       var reStartBtn = new Hilo.Bitmap({
@@ -58,18 +63,19 @@
         width: 350,
         height: 150,
         x: 420,
-        y: 700,
+        y: 750,
+        alpha: 0,
       })
 
-      scoreLabel.x = scoreBg.x + 100
-      scoreLabel.y = scoreBg.y + 50
+      score.x = scoreBg.x - 350
+      score.y = scoreBg.y + 50
 
       this.addChild(
         background,
         reStartBtn,
         fail,
         scoreBg,
-        scoreLabel,
+        score,
       )
     },
 
@@ -95,7 +101,7 @@
         y: 800,
       })
 
-      var scoreLabel = new Hilo.BitmapText({
+      var score = new Hilo.BitmapText({
         id: 'score',
         glyphs: props.numberGlyphs,
         scaleX: 0.5,
@@ -120,51 +126,72 @@
         background: '#fff'
       })
 
-      this.addChild(gameover, board, reStartBtn, scoreLabel, bestLabel, whiteMask)
+      this.addChild(gameover, board, reStartBtn, score, bestLabel, whiteMask)
     },
 
     show: function (score) {
       this.visible = true
-      this.getChildById('score').setText(score)
-      // this.getChildById('best').setText(bestScore)
+      let scoreTemp = 0
 
       Hilo.Tween.to(this.getChildById('background'), {
         alpha: 1
       }, {
-        duration: 100
+        duration: 200,
+        delay: 0,
       })
       Hilo.Tween.to(this.getChildById('fail'), {
         alpha: 1,
         y: this.getChildById('fail').y + 150
       }, {
-        duration: 200,
-        delay: 200
+        duration: 300,
+        delay: 300
       })
       Hilo.Tween.to(this.getChildById('scoreBg'), {
         alpha: 1,
-        y: this.getChildById('scoreBg').y + 150
+        x: this.getChildById('scoreBg').x - 450
       }, {
-        duration: 200,
-        delay: 200
+        duration: 300,
+        delay: 300
       })
-      Hilo.Tween.to(this.getChildById('reStartBtn'), {
-        alpha: 1
+      Hilo.Tween.to(this.getChildById('score'), {
+        alpha: 1,
+        visible: true,
       }, {
         duration: 100,
-        delay: 600
+        delay: 400
       })
+      Hilo.Tween.to(this.getChildById('reStartBtn'), {
+        alpha: 1,
+        y: this.getChildById('reStartBtn').y - 50
+      }, {
+        duration: 300,
+        delay: 700
+      })
+
+      // 数字递增动画
+      setTimeout(() => {
+        this.timer = setInterval(() => {
+          scoreTemp += 10
+          if (scoreTemp <= score) {
+            this.getChildById('score').setText(scoreTemp)
+          } else {
+            this.timer && clearInterval(this.timer)
+          }
+        }, 30)
+      }, 400)
     },
 
     hide: function () {
       this.visible = false
       this.getChildById('background').alpha = 0
-      this.getChildById('board').alpha = 0
+      this.getChildById('fail').alpha = 0
       this.getChildById('score').alpha = 0
-      this.getChildById('best').alpha = 0
-      this.getChildById('start').alpha = 0
-      this.getChildById('board').y -= 150
-      this.getChildById('score').y -= 150
-      this.getChildById('best').y -= 150
+      this.getChildById('scoreBg').alpha = 0
+      this.getChildById('reStartBtn').alpha = 0
+
+      this.getChildById('fail').y -= 150
+      this.getChildById('scoreBg').x += 450
+      this.getChildById('reStartBtn').y += 50
     }
   });
 

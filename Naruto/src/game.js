@@ -193,6 +193,7 @@
 
       this.gameOverScene.getChildById('reStartBtn').on(Hilo.event.POINTER_START, function (e) {
         e.stopImmediatePropagation && e.stopImmediatePropagation()
+        this.gameOverScene.hide()
         this.gameStart()
       }.bind(this))
     },
@@ -266,8 +267,8 @@
         if (enemy.hitTestObject(this.role) && !this.role.isInvincible) {
           // If the treasure is touching the explorer, center it over the explorer
           Databus.fire('beInjured', this.role)
-          // this.setBlood(-enemy.hurt)
-          this.setBlood(-100)
+          this.setBlood(-enemy.hurt)
+          // this.setBlood(-100)
 
           if (this.catching) {
             const { x, y } = this.treasure
@@ -353,6 +354,7 @@
         this.scoreTag.visible = false
         this.currentScore.visible = false
         this.gameOverScene.show(this.score)
+        this.gameReadyScene.getChildById('startBtn').off()
       }
     },
   }
