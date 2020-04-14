@@ -5,64 +5,33 @@
 
     bg: null,
     roleAtlas: null,
+    resources: [],
 
     load: function () {
-      var resources = [
+      this.resources = [
         {
           id: 'bg',
           src: 'images/bg.png'
         },
         {
-          id: 'bg-start',
+          id: 'bgStart',
           src: 'images/bg-start.png'
         },
         {
-          id: 'bg-end',
+          id: 'bgEnd',
           src: 'images/bg-end.png'
         },
         {
-          id: 'start-button',
+          id: 'playBtn',
           src: 'images/start-button.png'
         },
         {
-          id: 'restart-button.png',
+          id: 'playAgainBtn',
           src: 'images/restart-button.png'
-        },
-        {
-          id: 'role',
-          src: 'images/role.png'
-        },
-        {
-          id: 'role3',
-          src: 'images/role-third.png'
-        },
-        {
-          id: 'skill',
-          src: 'images/skill.png'
-        },
-        {
-          id: 'skill3',
-          src: 'images/skill3.png'
-        },
-        {
-          id: 'score-tag',
-          src: 'images/score-tag.png'
-        },
-        {
-          id: 'number',
-          src: 'images/number.png'
         },
         {
           id: 'door',
           src: 'images/door.png'
-        },
-        {
-          id: 'dog',
-          src: 'images/dog.png'
-        },
-        {
-          id: 'shuimu',
-          src: 'images/shuimu.png'
         },
         {
           id: 'treasure',
@@ -81,35 +50,65 @@
           src: 'images/fail.png'
         },
         {
+          id: 'scoreTag',
+          src: 'images/score-tag.png'
+        },
+        {
           id: 'scoreText',
           src: 'images/score-text.png'
         },
         {
-          id: 'score-bg',
+          id: 'scoreBg',
           src: 'images/score-bg.png'
+        },
+        {
+          id: 'musicBtn',
+          src: 'images/music.png'
+        }
+      ]
+
+      var atlas = [
+        {
+          id: 'role',
+          src: 'images/role.png'
+        },
+        {
+          id: 'role3',
+          src: 'images/role-third.png'
+        },
+        {
+          id: 'skill',
+          src: 'images/skill.png'
+        },
+        {
+          id: 'skill3',
+          src: 'images/skill3.png'
+        },
+        {
+          id: 'dog',
+          src: 'images/dog.png'
+        },
+        {
+          id: 'shuimu',
+          src: 'images/shuimu.png'
+        },
+        {
+          id: 'number',
+          src: 'images/number.png'
         },
       ]
 
       this.queue = new Hilo.LoadQueue()
-      this.queue.add(resources)
+      this.queue.add(atlas)
+      this.queue.add(this.resources)
       this.queue.on('complete', this.onComplete.bind(this))
       this.queue.start()
     },
 
     onComplete: function () {
-      this.bg = this.queue.getContent('bg')
-      this.door = this.queue.getContent('door')
-      this.bgEnd = this.queue.getContent('bg-end')
-      this.bgStart = this.queue.getContent('bg-start')
-      this.playBtn = this.queue.getContent('start-button')
-      this.playAgainBtn = this.queue.getContent('restart-button.png')
-      this.fail = this.queue.getContent('fail')
-      this.treasure = this.queue.getContent('treasure')
-      this.scoreBg = this.queue.getContent('score-bg')
-      this.scoreTag = this.queue.getContent('score-tag')
-      this.scoreText = this.queue.getContent('score-text')
-      this.bloodFull = this.queue.getContent('bloodFull')
-      this.bloodEmpty = this.queue.getContent('bloodEmpty')
+      this.resources.forEach(({ id, src }) => {
+        this[id] = this.queue.getContent(src)
+      })
 
       this.roleAtlas = (() => {
         var w = 32

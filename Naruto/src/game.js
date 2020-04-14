@@ -20,6 +20,7 @@
     stage: null, // 舞台
     state: null, // 状态机：ready 准备、playing 游戏中、over 结束
     ticker: null,
+    musicState: 'stop', // BGM🎵状态机：stop / play
     score: 0, // 分数
     level: 1, // 关卡
     enemys: [], // 敌人列表
@@ -40,7 +41,7 @@
       this.asset.load()
 
       this.audio = new game.Audios()
-      // this.audio.load()
+      this.audio.load()
     },
 
     initStage: function () {
@@ -71,12 +72,10 @@
       this.onKeydown = this.onKeydown.bind(this)
       this.onKeyup = this.onKeyup.bind(this)
       this.stage.enableDOMEvent(Hilo.event.POINTER_START, true)
-      // this.stage.on(Hilo.event.POINTER_START, this.onUserInput.bind(this))
 
       // WASD键控制
       if (document.addEventListener) {
         document.addEventListener('keydown', this.onKeydown)
-
         document.addEventListener('keyup', this.onKeyup)
       }
 
@@ -173,7 +172,8 @@
         width: this.width,
         height: this.height,
         background: this.asset.bgStart,
-        button: this.asset.playBtn,
+        playBtn: this.asset.playBtn,
+        musicBtn: this.asset.musicBtn,
       }).addTo(this.stage)
 
       //结束场景
@@ -196,10 +196,39 @@
         this.gameStart()
       }.bind(this))
 
+      // 绑定再来一次按钮事件
       this.gameOverScene.getChildById('reStartBtn').on(Hilo.event.POINTER_START, function (e) {
         e.stopImmediatePropagation && e.stopImmediatePropagation()
         this.gameOverScene.hide()
         this.gameStart()
+      }.bind(this))
+
+      this.musicBtn = new Hilo.Bitmap({
+        id: 'musicBtn',
+        image: this.asset.musicBtn,
+        rect: [this.musicState === 'play' ? 0 : 85, 0, 85, 92],
+        x: 0,
+        y: 0
+      }).addTo(this.stage)
+
+      // 绑定音乐🎵开关事件
+      this.musicBtn.on(Hilo.event.POINTER_START, function (e) {
+        e.stopImmediatePropagation && e.stopImmediatePropagation()
+        if (this.musicState === 'stop') {
+          if (this.state === 'ready') this.audio.startBgm.play()
+
+          this.musicState = 'play'
+          this.musicBtn.setImage(this.asset.musicBtn, [0, 0, 85, 92])
+          this.audio.resources.forEach(({ id, volume = 1 }) => {
+            this.audio[id].volume = volume
+          })
+        } else {
+          this.musicState = 'stop'
+          this.musicBtn.setImage(this.asset.musicBtn, [85, 0, 85, 92])
+          this.audio.resources.forEach(({ id }) => {
+            this.audio[id].volume = 0
+          })
+        }
       }.bind(this))
     },
 
@@ -246,8 +275,8 @@
         const dog = new game.Enemy({
           id: 'dog',
           atlas: this.asset.shuimuAtlas,
-          speed: 5 + this.level,
-          hurt: 10,
+          speed: 5 + this.level / 2,
+          hurt: 10 + this.level,
           direction: randomDirection(),
           startX: randomInt(200, BG_CORNER.right),
           startY: randomInt(60, BG_CORNER.bottom),
@@ -258,12 +287,9 @@
       }
     },
 
+    // Game帧渲染函数
     onUpdate: function (delta) {
       if (this.state !== 'playing') return
-
-      if (this.audio.startBg.playing) {
-        this.audio.startBg.stop()
-      }
 
       if (this.role.hitTestObject(this.treasure) && !this.role.usingSkill) {
         // If the treasure is touching the explorer, center it over the explorer
@@ -272,7 +298,7 @@
         this.treasure.y = this.role.y - 20
       }
 
-      this.enemys.forEach(enemy => {
+      for (const enemy of this.enemys) {
         if (enemy.hitTestObject(this.role) && !this.role.isInvincible && !this.role.usingSkill) {
           // If the treasure is touching the explorer, center it over the explorer
           Databus.fire('beInjured', this.role)
@@ -292,8 +318,9 @@
             this.tween.start()
             this.catching = false
           }
+          break
         }
-      })
+      }
 
       if (this.treasure.hitTestObject(this.door)) {
         this.score += 10
@@ -338,15 +365,37 @@
       this.currentScore.setText(this.score)
       this.gameReadyScene.visible = false
       this.role.getReady()
-      this.audio.startBg.pause()
-      this.audio.playBg.play()
+      this.audio.startBgm.pause()
+      this.audio.playBgm.play()
     },
 
     gameNextLevel: function () {
       this.state = 'next'
       this.level += 1
       this.enemyAmount += 1
+      this.clearBattleField()
+    },
+
+    gameOver: function () {
+      if (this.state !== 'over') {
+        this.state = 'over'
+        this.score = 0,
+        this.level = 1,
+        this.enemys = [],
+        this.enemyAmount = 5,
+        this.bloodAmount = 100,
+        this.clearBattleField()
+        this.scoreTag.visible = false
+        this.currentScore.visible = false
+        this.audio.playBgm.pause()
+        this.gameOverScene.show(this.score)
+        this.gameReadyScene.getChildById('startBtn').off()
+      }
+    },
+
+    clearBattleField: function () {
       this.catching = false
+      this.bloodAmount = 100
       this.ticker.stop()
       this.ticker.removeTick(Hilo.Tween)
       this.ticker.removeTick(this.stage)
@@ -356,16 +405,6 @@
       document.removeEventListener('keydown', this.onKeydown)
       document.removeEventListener('keyup', this.onKeyup)
       this.initStage()
-    },
-
-    gameOver: function () {
-      if (this.state !== 'over') {
-        this.state = 'over'
-        this.scoreTag.visible = false
-        this.currentScore.visible = false
-        this.gameOverScene.show(this.score)
-        this.gameReadyScene.getChildById('startBtn').off()
-      }
     },
   }
 

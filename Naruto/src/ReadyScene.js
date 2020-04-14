@@ -16,14 +16,14 @@
       })
 
       // 开始按钮
-      var button = new Hilo.Bitmap({
+      var playBtn = new Hilo.Bitmap({
         id: 'startBtn',
-        image: props.button,
+        image: props.playBtn,
         x: 20,
         y: 800,
       })
 
-      this.addChild(background, button)
+      this.addChild(background, playBtn)
     }
   })
 
