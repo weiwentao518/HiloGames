@@ -96,10 +96,11 @@
       this.addFrame(this.skillAtlas.getSprite('start'))
       this.play()
       ns.audio.skillPre.play()
-      console.log(ns.audio.skillPre.duration)
+      var duration = ns.audio.skillPre.duration || 0
+      console.log('duration', duration)
       this.timer0 = setTimeout(() => {
         ns.audio.skillCur.play()
-      }, 1000)
+      }, 1500)
 
       this.timer = setTimeout(() => {
         this.width = 52.5
@@ -110,7 +111,7 @@
         this.clearFrame()
         this.addFrame(this.atlas.getSprite(this.direction))
         this.stand()
-      }, 2500)
+      }, 2400)
     },
 
     getReady: function () {

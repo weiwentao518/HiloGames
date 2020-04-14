@@ -39,11 +39,8 @@
       }.bind(this))
       this.asset.load()
 
-      this.audio = new game.Audio()
-
-      setTimeout(() => {
-        this.audio.startBg.play()
-      }, 1000)
+      this.audio = new game.Audios()
+      // this.audio.load()
     },
 
     initStage: function () {
@@ -341,7 +338,7 @@
       this.currentScore.setText(this.score)
       this.gameReadyScene.visible = false
       this.role.getReady()
-      this.audio.startBg.stop()
+      this.audio.startBg.pause()
       this.audio.playBg.play()
     },
 

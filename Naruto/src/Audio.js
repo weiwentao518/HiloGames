@@ -1,33 +1,9 @@
 (function (ns) {
 
-  var Audio = ns.Audio = Hilo.Class.create({
+  var Audios = ns.Audios = Hilo.Class.create({
     Mixes: Hilo.EventMixin,
 
-    load: function () {
-      var resources = [
-        {
-          id: 'startBg',
-          src: 'audios/青鸟.mp3'
-        },
-        {
-          id: 'playBg',
-          src: 'audios/playBg.mp3'
-        },
-        {
-          id: 'hurt',
-          src: 'audios/man-hurt.mp3'
-        },
-      ]
-
-      this.queue = new Hilo.LoadQueue()
-      this.queue.add(resources)
-      this.queue.on('completes', this.onComplete.bind(this))
-      this.queue.start()
-      console.log(this.queue.getLoaded())
-    },
-
-    constructor: function () {
-      console.log(1111)
+    constructors: function () {
       this.startBg = new Hilo.WebAudio({
         loop: true,
         // autoPlay: true,
@@ -60,8 +36,45 @@
 
       this.playBg.setVolume(0.5)
     },
+
+    load: function () {
+      var resources = [
+        {
+          id: 'startBg',
+          src: 'audios/startBg.mp3',
+          loop: true,
+          autoplay: true,
+        },
+        {
+          id: 'playBg',
+          src: 'audios/playBg.mp3',
+          loop: true,
+          volume: 0.5,
+        },
+        {
+          id: 'hurt',
+          src: 'audios/man-hurt.mp3'
+        },
+        {
+          id: 'skillPre',
+          src: 'audios/skill-yingfenshen.mp3'
+        },
+        {
+          id: 'skillCur',
+          src: 'audios/skill-luoxuanwan.mp3'
+        },
+      ]
+
+      resources.forEach(({ id, src, loop = false, volume = 1, autoplay = false }) => {
+        this[id] = new Audio()
+        this[id].src = src
+        this[id].loop = loop
+        this[id].volume = volume
+        this[id].autoplay = autoplay
+      })
+    },
   })
 
-  Audio.great = true
+  Audios.great = true
 
 })(window.game)
