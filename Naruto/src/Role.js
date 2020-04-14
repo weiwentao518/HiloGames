@@ -96,8 +96,6 @@
       this.addFrame(this.skillAtlas.getSprite('start'))
       this.play()
       ns.audio.skillPre.play()
-      var duration = ns.audio.skillPre.duration || 0
-      console.log('duration', duration)
       this.timer0 = setTimeout(() => {
         ns.audio.skillCur.play()
       }, 1500)
@@ -111,6 +109,8 @@
         this.clearFrame()
         this.addFrame(this.atlas.getSprite(this.direction))
         this.stand()
+        // 全屏秒杀
+        ns.enemys.forEach(i => i.removeFromParent())
       }, 2400)
     },
 

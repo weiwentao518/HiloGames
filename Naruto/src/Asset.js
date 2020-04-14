@@ -64,7 +64,11 @@
         {
           id: 'musicBtn',
           src: 'images/music.png'
-        }
+        },
+        {
+          id: 'skillIcon',
+          src: 'images/skill-icon.png'
+        },
       ]
 
       var atlas = [

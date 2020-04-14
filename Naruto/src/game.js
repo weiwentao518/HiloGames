@@ -25,6 +25,8 @@
     level: 1, // 关卡
     enemys: [], // 敌人列表
     enemyAmount: 5, // 敌人数量
+    skillAmount: 0, // 可释放技能数量
+    skillIconList: [], // 技能列表
     bloodAmount: 100, // 初始血量：100%
 
     bg: null,
@@ -84,10 +86,11 @@
 
       //初始化
       this.initBackground()
-      this.initScenes()
+      this.initCurrentScore()
+      this.initSkillAmount()
       this.initRole()
       this.initEnemy()
-      this.initCurrentScore()
+      this.initScenes()
 
       //准备游戏
       this.level === 1 ? this.gameReady() : this.gameStart()
@@ -97,7 +100,12 @@
       if (this.role.isDead || this.role.usingSkill) return
 
       switch (e.keyCode) {
-        case 32: this.role.useSkill()
+        case 32:
+          if (this.skillAmount > 0) {
+            this.skillAmount -= 1
+            this.role.useSkill()
+            this.initSkillAmount()
+          }
         break
         case 87: this.role.run('up')
         break
@@ -200,6 +208,7 @@
       this.gameOverScene.getChildById('reStartBtn').on(Hilo.event.POINTER_START, function (e) {
         e.stopImmediatePropagation && e.stopImmediatePropagation()
         this.gameOverScene.hide()
+        this.initData()
         this.gameStart()
       }.bind(this))
 
@@ -241,7 +250,6 @@
         textAlign: 'center',
         scaleX: 0.5,
         scaleY: 0.5,
-        visible: false
       }).addTo(this.stage)
 
       this.scoreTag = new Hilo.Bitmap({
@@ -251,12 +259,28 @@
         y: 8,
         width: 100,
         height: 50,
-        visible: false
       }).addTo(this.stage)
 
       //设置当前分数的位置
       this.currentScore.x = 450
       this.currentScore.y = 10
+    },
+
+    initSkillAmount: function () {
+      this.skillIconList.forEach(i => i.removeFromParent())
+
+      var amount = this.skillAmount
+      while (amount > 0) {
+        var icon = new Hilo.Bitmap({
+          image: this.asset.skillIcon,
+          x: 10 + amount * 60,
+          y: this.height - 60,
+          width: 50,
+          height: 50,
+        }).addTo(this.stage)
+        this.skillIconList.push(icon)
+        amount -= 1
+      }
     },
 
     initRole: function () {
@@ -352,17 +376,12 @@
     gameReady: function () {
       this.state = 'ready'
       this.score = 0
-      this.scoreTag.visible = false
-      this.currentScore.visible = false
       this.gameReadyScene.visible = true
       this.role.getReady()
     },
 
     gameStart: function () {
       this.state = 'playing'
-      this.scoreTag.visible = true
-      this.currentScore.visible = true
-      this.currentScore.setText(this.score)
       this.gameReadyScene.visible = false
       this.role.getReady()
       this.audio.startBgm.pause()
@@ -374,23 +393,26 @@
       this.level += 1
       this.enemyAmount += 1
       this.clearBattleField()
+
+      if (this.level % 3 === 0) this.skillAmount += 1
     },
 
     gameOver: function () {
       if (this.state !== 'over') {
         this.state = 'over'
-        this.score = 0,
-        this.level = 1,
-        this.enemys = [],
-        this.enemyAmount = 5,
-        this.bloodAmount = 100,
         this.clearBattleField()
-        this.scoreTag.visible = false
-        this.currentScore.visible = false
         this.audio.playBgm.pause()
         this.gameOverScene.show(this.score)
         this.gameReadyScene.getChildById('startBtn').off()
       }
+    },
+
+    initData: function () {
+      this.score = 0
+      this.level = 1
+      this.enemyAmount = 5
+      this.skillAmount = 0
+      this.bloodAmount = 100
     },
 
     clearBattleField: function () {
