@@ -7,7 +7,7 @@
     constructor: function (props) {
       Enemy.superclass.constructor.call(this, props);
 
-      this.width = 70
+      this.width = 45
       this.height = 70
       this.forward = 1 // 控制方向：向前、还是向后跑
       this.hurt = props.hurt || 10

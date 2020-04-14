@@ -37,6 +37,14 @@
           src: 'images/role-third.png'
         },
         {
+          id: 'skill',
+          src: 'images/skill.png'
+        },
+        {
+          id: 'skill3',
+          src: 'images/skill3.png'
+        },
+        {
           id: 'score-tag',
           src: 'images/score-tag.png'
         },
@@ -51,6 +59,10 @@
         {
           id: 'dog',
           src: 'images/dog.png'
+        },
+        {
+          id: 'shuimu',
+          src: 'images/shuimu.png'
         },
         {
           id: 'treasure',
@@ -100,30 +112,32 @@
       this.bloodEmpty = this.queue.getContent('bloodEmpty')
 
       this.roleAtlas = (() => {
-        var w = 46
-        var h = 62
+        var w = 32
+        var h = 50
+        var xr = w + 15
+        var hr = h + 17
         return new Hilo.TextureAtlas({
           image: this.queue.getContent('role'),
           frames: [
-            [0, 0, w, h],
-            [w, 0, w, h],
-            [w * 2, 0, w, h],
-            [w * 3, 0, w, h],
+            [5, 5, w, h],
+            [xr, 5, w, h],
+            [xr * 2, 5, w, h],
+            [xr * 3, 5, w, h],
 
-            [0, h, w, h],
-            [w, h, w, h],
-            [w * 2, h, w, h],
-            [w * 3, h, w, h],
+            [5, hr, w, h],
+            [xr, hr, w, h],
+            [xr * 2, hr, w, h],
+            [xr * 3, hr, w, h],
 
-            [0, h * 2, w, h],
-            [w, h * 2, w, h],
-            [w * 2, h * 2, w, h],
-            [w * 3, h * 2, w, h],
+            [5, hr * 2, w, h],
+            [xr, hr * 2, w, h],
+            [xr * 2, hr * 2, w, h],
+            [xr * 3, hr * 2, w, h],
 
-            [0, h * 3, w, h],
-            [w, h * 3, w, h],
-            [w * 2, h * 3, w, h],
-            [w * 3, h * 3, w, h],
+            [5, hr * 3, w, h],
+            [xr, hr * 3, w, h],
+            [xr * 2, hr * 3, w, h],
+            [xr * 3, hr * 3, w, h],
           ],
           sprites: {
             standing: [0],
@@ -207,6 +221,94 @@
         })
       })()
 
+      this.shuimuAtlas = (() => {
+        var w = 45
+        var h = 70
+        var xr = w + 20
+        var hr = h + 20
+        return new Hilo.TextureAtlas({
+          image: this.queue.getContent('shuimu'),
+          frames: [
+            [5, 10, w, h],
+            [xr, 10, w, h],
+            [xr * 2, 10, w, h],
+            [xr * 3, 10, w, h],
+
+            [5, hr, w, h],
+            [xr, hr, w, h],
+            [xr * 2, hr, w, h],
+            [xr * 3, hr, w, h],
+
+            [5, hr * 2, w, h],
+            [xr, hr * 2, w, h],
+            [xr * 2, hr * 2, w, h],
+            [xr * 3, hr * 2, w, h],
+
+            [5, hr * 3, w, h],
+            [xr, hr * 3, w, h],
+            [xr * 2, hr * 3, w, h],
+            [xr * 3, hr * 3, w, h],
+          ],
+          sprites: {
+            standing: [0],
+            down: [0, 1, 2, 3],
+            left: [4, 5, 6, 7],
+            right: [8, 9, 10, 11],
+            up: [12, 13, 14, 15],
+          },
+        })
+      })()
+
+      this.skillAtlas = (() => {
+        var w = 192
+        var h = 95
+        var xr = w + 0
+        var hr = h + 95
+        return new Hilo.TextureAtlas({
+          image: this.queue.getContent('skill'),
+          frames: [
+            [0, 0, w, h],
+            [xr, 0, w, h],
+            [xr * 2, 0, w, h],
+            [xr * 3, 0, w, h],
+            [xr * 4, 0, w, h],
+
+            [0, hr, w, h],
+            [xr, hr, w, h],
+            [xr * 2, hr, w, h],
+            [xr * 3, hr, w, h],
+            [xr * 4, hr, w, h],
+
+            [0, hr * 2, w, h],
+            [xr, hr * 2, w, h],
+            [xr * 2, hr * 2, w, h],
+            [xr * 3, hr * 2, w, h],
+            [xr * 4, hr * 2, w, h],
+
+            [0, hr * 3, w, h],
+            [xr, hr * 3, w, h],
+            [xr * 2, hr * 3, w, h],
+            [xr * 3, hr * 3, w, h],
+            [xr * 4, hr * 3, w, h],
+
+            [0, hr * 4, w, h],
+            [xr, hr * 4, w, h],
+            [xr * 2, hr * 4, w, h],
+            [xr * 3, hr * 4, w, h],
+            [xr * 4, hr * 4, w, h],
+
+            [0, hr * 5, w, h],
+            [xr, hr * 5, w, h],
+            [xr * 2, hr * 5, w, h],
+            [xr * 3, hr * 5, w, h],
+            [xr * 4, hr * 5, w, h],
+          ],
+          sprites: {
+            start: new Array(30).fill(0).map((_, i) => i),
+          },
+        })
+      })()
+
       var number = this.queue.get('number').content
       this.numberGlyphs = {
         0: {
@@ -251,11 +353,11 @@
         }
       }
 
-      this.queue.off('complete');
-      this.fire('complete');
+      this.queue.off('complete')
+      this.fire('complete')
     }
-  });
+  })
 
   Asset.great = true
 
-})(window.game);
+})(window.game)

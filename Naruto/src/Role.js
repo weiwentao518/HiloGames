@@ -7,12 +7,13 @@
     constructor: function (props) {
       Role.superclass.constructor.call(this, props);
 
-      this.width = 70
-      this.height = 90
-      // this.pivotX = this.width / 2
-      // this.pivotY = this.height / 2
+      this.width = 52.5
+      this.height = 75
+      this.timer = null
       this.isDead = false
+      this.usingSkill = false
       this.direction = 'standing'
+      this.skillAtlas = ns.asset.skillAtlas
       // this.background = '#ff0'
 
       this.speed = props.speed || 12
@@ -82,12 +83,42 @@
       }
     },
 
+    useSkill: function () {
+      this.timer && clearTimeout(this.timer)
+      this.timer0 && clearTimeout(this.timer0)
+
+      this.width = 384
+      this.height = 190
+      this.x -= 50
+      this.y -= 100
+      this.usingSkill = true
+      this.clearFrame()
+      this.addFrame(this.skillAtlas.getSprite('start'))
+      this.play()
+      ns.audio.skillPre.play()
+      console.log(ns.audio.skillPre.duration)
+      this.timer0 = setTimeout(() => {
+        ns.audio.skillCur.play()
+      }, 1000)
+
+      this.timer = setTimeout(() => {
+        this.width = 52.5
+        this.height = 75
+        this.x += 150
+        this.y += 100
+        this.usingSkill = false
+        this.clearFrame()
+        this.addFrame(this.atlas.getSprite(this.direction))
+        this.stand()
+      }, 2500)
+    },
+
     getReady: function () {
       //设置起始坐标
       this.x = this.startX
       this.y = this.startY
       this.rotation = 0
-      this.interval = 6
+      this.interval = 5
       this.play()
     },
 
@@ -103,7 +134,7 @@
       }
     },
 
-    // 监听game.js 传入的受伤事件🤕️
+    // 受伤事件🤕️
     onBeInjured: function () {
       this.tween = Hilo.Tween.to(this, {
         alpha: 0,
@@ -113,6 +144,7 @@
         reverse: true
       })
       this.tween.start()
+      ns.audio.hurt.play()
     }
   })
 

@@ -40,6 +40,10 @@
       this.asset.load()
 
       this.audio = new game.Audio()
+
+      setTimeout(() => {
+        this.audio.startBg.play()
+      }, 1000)
     },
 
     initStage: function () {
@@ -94,9 +98,11 @@
     },
 
     onKeydown: function (e) {
-      if (this.role.isDead) return
+      if (this.role.isDead || this.role.usingSkill) return
 
       switch (e.keyCode) {
+        case 32: this.role.useSkill()
+        break
         case 87: this.role.run('up')
         break
         case 65: this.role.run('left')
@@ -109,7 +115,9 @@
       }
     },
 
-    onKeyup: function () {
+    onKeyup: function (e) {
+      if (e.keyCode === 32 || this.role.usingSkill) return
+      console.log({keyCode: e.keyCode, tag: (e.keyCode === 32 || this.role.usingSkill)})
       this.role.stand()
     },
 
@@ -168,7 +176,7 @@
         width: this.width,
         height: this.height,
         background: this.asset.bgStart,
-        button: this.asset.playBtn
+        button: this.asset.playBtn,
       }).addTo(this.stage)
 
       //结束场景
@@ -240,7 +248,7 @@
       for (let i = 0; i < this.enemyAmount; i++) {
         const dog = new game.Enemy({
           id: 'dog',
-          atlas: this.asset.dogAtlas,
+          atlas: this.asset.shuimuAtlas,
           speed: 5 + this.level,
           hurt: 10,
           direction: randomDirection(),
@@ -256,7 +264,11 @@
     onUpdate: function (delta) {
       if (this.state !== 'playing') return
 
-      if (this.role.hitTestObject(this.treasure)) {
+      if (this.audio.startBg.playing) {
+        this.audio.startBg.stop()
+      }
+
+      if (this.role.hitTestObject(this.treasure) && !this.role.usingSkill) {
         // If the treasure is touching the explorer, center it over the explorer
         this.catching = true
         this.treasure.x = this.role.x + 15
@@ -264,7 +276,7 @@
       }
 
       this.enemys.forEach(enemy => {
-        if (enemy.hitTestObject(this.role) && !this.role.isInvincible) {
+        if (enemy.hitTestObject(this.role) && !this.role.isInvincible && !this.role.usingSkill) {
           // If the treasure is touching the explorer, center it over the explorer
           Databus.fire('beInjured', this.role)
           this.setBlood(-enemy.hurt)
@@ -287,7 +299,6 @@
       })
 
       if (this.treasure.hitTestObject(this.door)) {
-        console.log('你赢了！')
         this.score += 10
         this.currentScore.setText(this.score)
 
@@ -330,6 +341,8 @@
       this.currentScore.setText(this.score)
       this.gameReadyScene.visible = false
       this.role.getReady()
+      this.audio.startBg.stop()
+      this.audio.playBg.play()
     },
 
     gameNextLevel: function () {
