@@ -12,6 +12,7 @@
       this.timer = null
       this.isDead = false
       this.usingSkill = false
+      this.isInvincible = false // 是否无敌
       this.status = 'normal' // 鸣人状态：normal 正常 / third 三尾
       this.direction = 'standing'
       this.skillAtlas = ns.asset.skillAtlas

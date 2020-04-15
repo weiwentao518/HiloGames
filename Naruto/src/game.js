@@ -392,6 +392,7 @@
       }
     },
 
+    // 设置血量
     setBlood: function (percent) {
       var next = (this.bloodAmount += percent)
       next = next > 100 ? 100 : next
@@ -411,6 +412,7 @@
       }
     },
 
+    // 游戏准备
     gameReady: function () {
       this.state = 'ready'
       this.score = 0
@@ -418,6 +420,7 @@
       this.role.getReady()
     },
 
+    // 游戏开始
     gameStart: function () {
       this.state = 'playing'
       this.gameReadyScene.visible = false
@@ -427,6 +430,7 @@
       // Databus.fire('roleTransform', this.asset.role3Atlas)
     },
 
+    // 下一关
     gameNextLevel: function () {
       this.state = 'next'
       this.level += 1
@@ -436,6 +440,7 @@
       if (this.level % 3 === 0) this.skillAmount += 1
     },
 
+    // 游戏结束
     gameOver: function () {
       if (this.state !== 'over') {
         this.state = 'over'
