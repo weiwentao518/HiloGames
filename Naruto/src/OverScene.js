@@ -37,15 +37,6 @@
         alpha: 0
       })
 
-      // var scoreText = new Hilo.Bitmap({
-      //   id: 'scoreText',
-      //   image: props.images.scoreText,
-      //   width: 1000,
-      //   height: 2000,
-      //   scaleX: 20,
-      //   scaleY: 20,
-      // })
-
       var score = new Hilo.BitmapText({
         id: 'score',
         glyphs: props.numberGlyphs,
@@ -131,7 +122,7 @@
 
     show: function (score) {
       this.visible = true
-      let scoreTemp = 0
+      var scoreTemp = 0
 
       Hilo.Tween.to(this.getChildById('background'), {
         alpha: 1
@@ -177,7 +168,7 @@
           } else {
             this.timer && clearInterval(this.timer)
           }
-        }, 32)
+        }, 48)
       }, 400)
     },
 

@@ -3,6 +3,7 @@
   var {
     // Utils
     randomInt,
+    randomEnemy,
     randomDirection,
     // 常量
     BG_CORNER,
@@ -328,11 +329,12 @@
     },
 
     initEnemy: function () {
+      var atlas = randomEnemy()
 
       for (let i = 0; i < this.enemyAmount; i++) {
         const dog = new game.Enemy({
           id: 'dog',
-          atlas: this.asset.shuimuAtlas,
+          atlas: this.asset[atlas],
           speed: 5 + this.level / 2,
           hurt: 10 + this.level,
           direction: randomDirection(),

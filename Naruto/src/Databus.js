@@ -1,5 +1,5 @@
 (function () {
-  let instance
+  var instance
 
   var Databus = window.Databus = Hilo.Class.create({
     Mixes: Hilo.EventMixin,
@@ -48,9 +48,19 @@
       return directionMap[~~(Math.random() * 4)]
     },
 
+    // 随机敌人
+    randomEnemy() {
+      var enemyMap = {
+        0: 'shuimuAtlas',
+        1: 'douAtlas',
+        2: 'yaAtlas',
+      }
+      return enemyMap[~~(Math.random() * 3)]
+    },
+
     contain(sprite, container) {
 
-      let collision = undefined
+      var collision = undefined
 
       // Left
       if (sprite.x < container.left) {

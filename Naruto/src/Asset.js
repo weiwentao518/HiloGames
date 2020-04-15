@@ -97,12 +97,16 @@
           src: 'images/skill3.png'
         },
         {
-          id: 'dog',
-          src: 'images/enemy-dog.png'
-        },
-        {
           id: 'shuimu',
           src: 'images/enemy-shuimu.png'
+        },
+        {
+          id: 'dou',
+          src: 'images/enemy-dou.png'
+        },
+        {
+          id: 'ya',
+          src: 'images/enemy-ya.png'
         },
         {
           id: 'number',
@@ -196,42 +200,6 @@
         })
       })()
 
-      this.dogAtlas = (() => {
-        var w = 63
-        var h = 60
-        return new Hilo.TextureAtlas({
-          image: this.queue.getContent('dog'),
-          frames: [
-            [0, 0, w, h],
-            [w, 0, w, h],
-            [w * 2, 0, w, h],
-            [w * 3, 0, w, h],
-
-            [0, h, w, h],
-            [w, h, w, h],
-            [w * 2, h, w, h],
-            [w * 3, h, w, h],
-
-            [0, h * 2, w, h],
-            [w, h * 2, w, h],
-            [w * 2, h * 2, w, h],
-            [w * 3, h * 2, w, h],
-
-            [0, h * 3, w, h],
-            [w, h * 3, w, h],
-            [w * 2, h * 3, w, h],
-            [w * 3, h * 3, w, h],
-          ],
-          sprites: {
-            standing: [0],
-            down: [0, 1, 2, 3],
-            left: [4, 5, 6, 7],
-            right: [8, 9, 10, 11],
-            up: [12, 13, 14, 15],
-          },
-        })
-      })()
-
       this.shuimuAtlas = (() => {
         var w = 45
         var h = 70
@@ -259,6 +227,82 @@
             [xr, hr * 3, w, h],
             [xr * 2, hr * 3, w, h],
             [xr * 3, hr * 3, w, h],
+          ],
+          sprites: {
+            standing: [0],
+            down: [0, 1, 2, 3],
+            left: [4, 5, 6, 7],
+            right: [8, 9, 10, 11],
+            up: [12, 13, 14, 15],
+          },
+        })
+      })()
+
+      this.douAtlas = (() => {
+        var w = 30
+        var h = 50
+        var xr = w + 15
+        var hr = h + 16
+        return new Hilo.TextureAtlas({
+          image: this.queue.getContent('dou'),
+          frames: [
+            [10, 8, w, h],
+            [10 + xr, 8, w, h],
+            [10 + xr * 2, 8, w, h],
+            [10 + xr * 3, 8, w, h],
+
+            [10, hr, w, h],
+            [10 + xr, hr, w, h],
+            [10 + xr * 2, hr, w, h],
+            [10 + xr * 3, hr, w, h],
+
+            [10, hr * 2, w, h],
+            [10 + xr, hr * 2, w, h],
+            [10 + xr * 2, hr * 2, w, h],
+            [10 + xr * 3, hr * 2, w, h],
+
+            [10, hr * 3, w, h],
+            [10 + xr, hr * 3, w, h],
+            [10 + xr * 2, hr * 3, w, h],
+            [10 + xr * 3, hr * 3, w, h],
+          ],
+          sprites: {
+            standing: [0],
+            down: [0, 1, 2, 3],
+            left: [4, 5, 6, 7],
+            right: [8, 9, 10, 11],
+            up: [12, 13, 14, 15],
+          },
+        })
+      })()
+
+      this.yaAtlas = (() => {
+        var w = 35
+        var h = 60
+        var xr = w + 10
+        var hr = h + 5
+        return new Hilo.TextureAtlas({
+          image: this.queue.getContent('ya'),
+          frames: [
+            [10, 0, w, h],
+            [10 + xr, 0, w, h],
+            [10 + xr * 2, 0, w, h],
+            [10 + xr * 3, 0, w, h],
+
+            [10, hr, w, h],
+            [10 + xr, hr, w, h],
+            [10 + xr * 2, hr, w, h],
+            [10 + xr * 3, hr, w, h],
+
+            [10, hr * 2, w, h],
+            [10 + xr, hr * 2, w, h],
+            [10 + xr * 2, hr * 2, w, h],
+            [10 + xr * 3, hr * 2, w, h],
+
+            [10, hr * 3, w, h],
+            [10 + xr, hr * 3, w, h],
+            [10 + xr * 2, hr * 3, w, h],
+            [10 + xr * 3, hr * 3, w, h],
           ],
           sprites: {
             standing: [0],
