@@ -128,6 +128,8 @@
       })
       sleep(3000).then(() => {
         // 全屏秒杀
+        ns.score += ns.enemys.length
+        ns.currentScore.setText(ns.score)
         ns.enemys.forEach(i => i.removeFromParent())
         this.usingSkill = false
       })

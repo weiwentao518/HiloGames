@@ -1,4 +1,6 @@
 (function (ns) {
+  var Databus = new window.Databus()
+  var { sleep } = Databus
 
   var OverScene = ns.OverScene = Hilo.Class.create({
     Extends: Hilo.Container,
@@ -122,7 +124,6 @@
 
     show: function (score) {
       this.visible = true
-      var scoreTemp = 0
 
       Hilo.Tween.to(this.getChildById('background'), {
         alpha: 1
@@ -160,16 +161,19 @@
       })
 
       // 数字递增动画
-      setTimeout(() => {
+      var scoreTemp = 0
+      sleep(400).then(() => {
         this.timer = setInterval(() => {
-          scoreTemp += 10
-          if (scoreTemp <= score) {
+          if (scoreTemp < score) {
+            scoreTemp + 10 >= score
+              ? scoreTemp = score
+              : scoreTemp += 10
             this.getChildById('score').setText(scoreTemp)
           } else {
             this.timer && clearInterval(this.timer)
           }
         }, 48)
-      }, 400)
+      })
     },
 
     hide: function () {
