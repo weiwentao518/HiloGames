@@ -32,7 +32,7 @@
     level: 1, // 关卡
     enemys: [], // 敌人列表
     enemyAmount: 5, // 敌人数量
-    skillAmount: 0, // 可释放技能数量
+    skillAmount: 1, // 可释放技能数量
     skillIconList: [], // 技能列表
     bloodAmount: 100, // 初始血量：100%
 
@@ -447,7 +447,7 @@
       this.score = 0
       this.level = 1
       this.enemyAmount = 5
-      this.skillAmount = 0
+      this.skillAmount = 1
       this.bloodAmount = 100
     },
 
