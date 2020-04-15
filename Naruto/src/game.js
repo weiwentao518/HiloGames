@@ -93,6 +93,8 @@
       this.initRole()
       this.initEnemy()
       this.initScenes()
+      // 绑定事件
+      this.initEvents()
 
       // 准备游戏
       this.level === 1 ? this.gameReady() : this.gameStart()
@@ -182,100 +184,6 @@
       }).addTo(this.stage)
     },
 
-    initScenes: function () {
-      //准备场景
-      this.gameReadyScene = new game.ReadyScene({
-        id: 'readyScene',
-        width: this.width,
-        height: this.height,
-        dialog: this.asset.dialog,
-        playBtn: this.asset.playBtn,
-        background: this.asset.bgStart,
-        tutorialBtn: this.asset.tutorial,
-      }).addTo(this.stage)
-
-      //结束场景
-      this.gameOverScene = new game.OverScene({
-        id: 'overScene',
-        images: {
-          fail: this.asset.fail,
-          button: this.asset.playAgainBtn,
-          scoreBg: this.asset.scoreBg,
-          scoreText: this.asset.scoreText,
-          background: this.asset.bgEnd,
-        },
-        numberGlyphs: this.asset.numberGlyphs,
-        visible: false
-      }).addTo(this.stage)
-
-      // 绑定开始按钮事件
-      this.gameReadyScene.getChildById('startBtn').on(Hilo.event.POINTER_START, function (e) {
-        e.stopImmediatePropagation && e.stopImmediatePropagation()
-        this.gameStart()
-      }.bind(this))
-
-      // 绑定教程按钮事件
-      this.gameReadyScene.getChildById('tutorialBtn').on(Hilo.event.POINTER_START, function (e) {
-        e.stopImmediatePropagation && e.stopImmediatePropagation()
-        if (this.dialogVisible) {
-          Hilo.Tween.to(this.gameReadyScene.getChildById('dialog'), {
-            y: 100,
-            alpha: 0,
-            visible: false,
-          }, {
-            duration: 200,
-          })
-          this.dialogVisible = false
-        } else {
-          Hilo.Tween.to(this.gameReadyScene.getChildById('dialog'), {
-            y: 200,
-            alpha: 1,
-            visible: true,
-          }, {
-            duration: 200,
-          })
-          this.dialogVisible = true
-        }
-      }.bind(this))
-
-      // 绑定再来一次按钮事件
-      this.gameOverScene.getChildById('reStartBtn').on(Hilo.event.POINTER_START, function (e) {
-        e.stopImmediatePropagation && e.stopImmediatePropagation()
-        this.gameOverScene.hide()
-        this.resetData()
-        this.clearBattleField()
-        this.gameStart()
-      }.bind(this))
-
-      this.musicBtn = new Hilo.Bitmap({
-        id: 'musicBtn',
-        image: this.asset.musicBtn,
-        rect: [this.musicState === 'play' ? 0 : 85, 0, 85, 92],
-        x: 0,
-        y: 0
-      }).addTo(this.stage)
-
-      // 绑定音乐🎵开关事件
-      this.musicBtn.on(Hilo.event.POINTER_START, function (e) {
-        e.stopImmediatePropagation && e.stopImmediatePropagation()
-        if (this.musicState === 'stop') {
-          if (this.state === 'ready') this.audio.startBgm.play()
-
-          this.musicState = 'play'
-          this.musicBtn.setImage(this.asset.musicBtn, [0, 0, 85, 92])
-          this.audio.resources.forEach(({ id, volume = 1 }) => {
-            this.audio[id].volume = volume
-          })
-        } else {
-          this.musicState = 'stop'
-          this.musicBtn.setImage(this.asset.musicBtn, [85, 0, 85, 92])
-          this.audio.resources.forEach(({ id }) => {
-            this.audio[id].volume = 0
-          })
-        }
-      }.bind(this))
-    },
-
     initCurrentScore: function () {
       // 当前分数
       this.currentScore = new Hilo.BitmapText({
@@ -345,6 +253,102 @@
         dog.getReady()
         this.enemys.push(dog)
       }
+    },
+
+    initScenes: function () {
+      //准备场景
+      this.gameReadyScene = new game.ReadyScene({
+        id: 'readyScene',
+        width: this.width,
+        height: this.height,
+        dialog: this.asset.dialog,
+        playBtn: this.asset.playBtn,
+        background: this.asset.bgStart,
+        tutorialBtn: this.asset.tutorial,
+      }).addTo(this.stage)
+
+      //结束场景
+      this.gameOverScene = new game.OverScene({
+        id: 'overScene',
+        images: {
+          fail: this.asset.fail,
+          button: this.asset.playAgainBtn,
+          scoreBg: this.asset.scoreBg,
+          scoreText: this.asset.scoreText,
+          background: this.asset.bgEnd,
+        },
+        numberGlyphs: this.asset.numberGlyphs,
+        visible: false
+      }).addTo(this.stage)
+
+      this.musicBtn = new Hilo.Bitmap({
+        id: 'musicBtn',
+        image: this.asset.musicBtn,
+        rect: [this.musicState === 'play' ? 0 : 85, 0, 85, 92],
+        x: 0,
+        y: 0
+      }).addTo(this.stage)
+    },
+
+    initEvents: function () {
+      // 绑定开始按钮事件
+      this.gameReadyScene.getChildById('startBtn').on(Hilo.event.POINTER_START, function (e) {
+        e.stopImmediatePropagation && e.stopImmediatePropagation()
+        this.gameStart()
+      }.bind(this))
+
+      // 绑定教程按钮事件
+      this.gameReadyScene.getChildById('tutorialBtn').on(Hilo.event.POINTER_START, function (e) {
+        e.stopImmediatePropagation && e.stopImmediatePropagation()
+        if (this.dialogVisible) {
+          Hilo.Tween.to(this.gameReadyScene.getChildById('dialog'), {
+            y: 100,
+            alpha: 0,
+            visible: false,
+          }, {
+            duration: 200,
+          })
+          this.dialogVisible = false
+        } else {
+          Hilo.Tween.to(this.gameReadyScene.getChildById('dialog'), {
+            y: 200,
+            alpha: 1,
+            visible: true,
+          }, {
+            duration: 200,
+          })
+          this.dialogVisible = true
+        }
+      }.bind(this))
+
+      // 绑定再来一次按钮事件
+      this.gameOverScene.getChildById('reStartBtn').on(Hilo.event.POINTER_START, function (e) {
+        e.stopImmediatePropagation && e.stopImmediatePropagation()
+        this.gameOverScene.hide()
+        this.resetData()
+        this.clearBattleField()
+        this.gameStart()
+      }.bind(this))
+
+      // 绑定音乐🎵开关事件
+      this.musicBtn.on(Hilo.event.POINTER_START, function (e) {
+        e.stopImmediatePropagation && e.stopImmediatePropagation()
+        if (this.musicState === 'stop') {
+          if (this.state === 'ready') this.audio.startBgm.play()
+
+          this.musicState = 'play'
+          this.musicBtn.setImage(this.asset.musicBtn, [0, 0, 85, 92])
+          this.audio.resources.forEach(({ id, volume = 1 }) => {
+            this.audio[id].volume = volume
+          })
+        } else {
+          this.musicState = 'stop'
+          this.musicBtn.setImage(this.asset.musicBtn, [85, 0, 85, 92])
+          this.audio.resources.forEach(({ id }) => {
+            this.audio[id].volume = 0
+          })
+        }
+      }.bind(this))
     },
 
     // Game帧渲染函数
