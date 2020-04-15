@@ -69,12 +69,20 @@
           id: 'skillIcon',
           src: 'images/skill-icon.png'
         },
+        {
+          id: 'tutorial',
+          src: 'images/tutorial.png'
+        },
+        {
+          id: 'dialog',
+          src: 'images/dialog.png'
+        },
       ]
 
       var atlas = [
         {
           id: 'role',
-          src: 'images/role.png'
+          src: 'images/role-naruto.png'
         },
         {
           id: 'role3',
@@ -90,11 +98,11 @@
         },
         {
           id: 'dog',
-          src: 'images/dog.png'
+          src: 'images/enemy-dog.png'
         },
         {
           id: 'shuimu',
-          src: 'images/shuimu.png'
+          src: 'images/enemy-shuimu.png'
         },
         {
           id: 'number',
