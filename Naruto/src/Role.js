@@ -1,21 +1,23 @@
 (function (ns) {
   var Databus = new window.Databus()
-  var { sleep, BG_CORNER } = Databus
+  var { sleep, BG_CORNER, ROLE_RECT } = Databus
 
   var Role = ns.Role = Hilo.Class.create({
     Extends: Hilo.Sprite,
     constructor: function (props) {
       Role.superclass.constructor.call(this, props);
 
-      this.width = 52.5
-      this.height = 75
+      this.width = ROLE_RECT.normal.width
+      this.height = ROLE_RECT.normal.height
       this.timer = null
       this.isDead = false
       this.usingSkill = false
+      this.status = 'normal' // 鸣人状态：normal 正常 / third 三尾
       this.direction = 'standing'
       this.skillAtlas = ns.asset.skillAtlas
       // this.background = '#ff0'
 
+      this.props = props
       this.speed = props.speed || 12
       this.atlas = props.atlas
       this.startX = props.startX // 起始x坐标
@@ -24,6 +26,8 @@
 
       // 通过Databus监听传入的受伤事件🤕️
       Databus.on('beInjured', this.onBeInjured.bind(this))
+      // 监听变身事件🦊
+      Databus.on('roleTransform', this.onRoleTransform.bind(this))
     },
 
     run: function (direction) {
@@ -46,6 +50,8 @@
     },
 
     moving: function (direction) {
+      this.status === 'third' && this.setRoleRect(direction)
+
       switch (direction) {
         case 'up': (() => {
           if (this.y <= BG_CORNER.top) {
@@ -81,6 +87,17 @@
         break
         default: break
       }
+    },
+
+    setRoleRect: function (direction) {
+      var rectMap = {
+        up: 'thirdCol',
+        left: 'thirdRow',
+        right: 'thirdRow',
+        down: 'thirdCol',
+      }
+      this.width = ROLE_RECT[rectMap[direction]].width
+      this.height = ROLE_RECT[rectMap[direction]].height
     },
 
     // 使用全图必杀技
@@ -158,6 +175,21 @@
       })
       this.tween.start()
       ns.audio.hurt.play()
+    },
+
+    // 变身三尾🦊
+    onRoleTransform: function ({ detail: superAtlas }) {
+      console.log(superAtlas)
+      this.status = 'third'
+      this.atlas = superAtlas
+
+      sleep(10000).then(() => {
+        this.status = 'normal'
+        this.atlas = this.props.atlas
+        this.width = ROLE_RECT.normal.width
+        this.height = ROLE_RECT.normal.height
+        this.stand()
+      })
     }
   })
 

@@ -15,7 +15,20 @@
         bottom: 1040,
       }
 
-      // this.reset()
+      this.ROLE_RECT = {
+        normal: {
+          width: 52.5,
+          height: 75
+        },
+        thirdRow: {
+          width: 75 * 1.2,
+          height: 60 * 1.2
+        },
+        thirdCol: {
+          width: 55 * 1.2,
+          height: 70 * 1.2
+        }
+      }
     },
 
     sleep(ms) {

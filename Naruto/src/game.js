@@ -53,10 +53,10 @@
       this.height = Math.min(10000, 600) * 2
       this.scale = 0.5
 
-      //舞台画布
+      // 舞台画布
       var renderType = location.search.indexOf('dom') != -1 ? 'dom' : 'canvas'
 
-      //舞台
+      // 舞台
       this.stage = new Hilo.Stage({
         renderType: renderType,
         width: this.width,
@@ -66,7 +66,7 @@
       })
       document.body.appendChild(this.stage.canvas)
 
-      //启动计时器
+      // 启动计时器
       this.ticker = new Hilo.Ticker(60)
       this.ticker.addTick(Hilo.Tween)
       this.ticker.addTick(this.stage)
@@ -83,10 +83,10 @@
         document.addEventListener('keyup', this.onKeyup)
       }
 
-      //舞台更新
+      // 舞台更新
       this.stage.onUpdate = this.onUpdate.bind(this)
 
-      //初始化
+      // 初始化
       this.initBackground()
       this.initCurrentScore()
       this.initSkillAmount()
@@ -94,7 +94,7 @@
       this.initEnemy()
       this.initScenes()
 
-      //准备游戏
+      // 准备游戏
       this.level === 1 ? this.gameReady() : this.gameStart()
     },
 
@@ -359,7 +359,7 @@
 
       for (const enemy of this.enemys) {
         if (enemy.hitTestObject(this.role) && !this.role.isInvincible && !this.role.usingSkill) {
-          Databus.fire('beInjured', this.role)
+          Databus.fire('beInjured')
           this.setBlood(-enemy.hurt)
           // this.setBlood(-100)
 
@@ -420,6 +420,7 @@
       this.role.getReady()
       this.audio.startBgm.pause()
       this.audio.playBgm.play()
+      // Databus.fire('roleTransform', this.asset.role3Atlas)
     },
 
     gameNextLevel: function () {
