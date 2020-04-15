@@ -177,7 +177,7 @@
           } else {
             this.timer && clearInterval(this.timer)
           }
-        }, 30)
+        }, 32)
       }, 400)
     },
 

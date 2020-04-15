@@ -1,6 +1,6 @@
 (function (ns) {
   var Databus = new window.Databus()
-  var { BG_CORNER } = Databus
+  var { sleep, BG_CORNER } = Databus
 
   var Role = ns.Role = Hilo.Class.create({
     Extends: Hilo.Sprite,
@@ -83,9 +83,9 @@
       }
     },
 
+    // 使用全图必杀技
     useSkill: function () {
       this.timer && clearTimeout(this.timer)
-      this.timer0 && clearTimeout(this.timer0)
 
       this.width = 384
       this.height = 190
@@ -96,21 +96,33 @@
       this.addFrame(this.skillAtlas.getSprite('start'))
       this.play()
       ns.audio.skillPre.play()
-      this.timer0 = setTimeout(() => {
+      sleep(1500).then(() => {
         ns.audio.skillCur.play()
-      }, 1500)
+      })
+      sleep(2850).then(() => {
+        ns.audio.boom.play()
+        Hilo.Tween.to(ns.whiteMask, {
+          alpha: 1,
+        }, {
+          repeat: 3,
+          duration: 50,
+          reverse: true
+        })
+      })
+      sleep(3000).then(() => {
+        // 全屏秒杀
+        ns.enemys.forEach(i => i.removeFromParent())
+        this.usingSkill = false
+      })
 
       this.timer = setTimeout(() => {
         this.width = 52.5
         this.height = 75
         this.x += 150
         this.y += 100
-        this.usingSkill = false
         this.clearFrame()
         this.addFrame(this.atlas.getSprite(this.direction))
         this.stand()
-        // 全屏秒杀
-        ns.enemys.forEach(i => i.removeFromParent())
       }, 2400)
     },
 

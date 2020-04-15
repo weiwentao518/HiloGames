@@ -18,6 +18,10 @@
       // this.reset()
     },
 
+    sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms))
+    },
+
     // 碰撞检测
     hitTestRectangle(r1, r2) {
       return (

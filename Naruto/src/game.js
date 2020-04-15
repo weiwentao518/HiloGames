@@ -16,11 +16,17 @@
     width: 0,
     height: 0,
 
+    bg: null,
+    role: null,
     asset: null,
     stage: null, // 舞台
-    state: null, // 状态机：ready 准备、playing 游戏中、over 结束
+    state: null, // 状态机：ready 准备、playing 游戏中、over 结束、next 下一关过渡态
     ticker: null,
     musicState: 'stop', // BGM🎵状态机：stop / play
+    dialogVisible: false,
+    gameOverScene: null,
+    gameReadyScene: null,
+
     score: 0, // 分数
     level: 1, // 关卡
     enemys: [], // 敌人列表
@@ -28,11 +34,6 @@
     skillAmount: 0, // 可释放技能数量
     skillIconList: [], // 技能列表
     bloodAmount: 100, // 初始血量：100%
-
-    bg: null,
-    role: null,
-    gameReadyScene: null,
-    gameOverScene: null,
 
     init: function () {
       this.asset = new game.Asset()
@@ -171,6 +172,13 @@
         x: 832,
         y: 20,
       }).addTo(this.stage)
+
+      this.whiteMask = new Hilo.View({
+        width: this.width,
+        height: this.height,
+        alpha: 0,
+        background: '#fff'
+      }).addTo(this.stage)
     },
 
     initScenes: function () {
@@ -179,9 +187,10 @@
         id: 'readyScene',
         width: this.width,
         height: this.height,
-        background: this.asset.bgStart,
+        dialog: this.asset.dialog,
         playBtn: this.asset.playBtn,
-        musicBtn: this.asset.musicBtn,
+        background: this.asset.bgStart,
+        tutorialBtn: this.asset.tutorial,
       }).addTo(this.stage)
 
       //结束场景
@@ -204,11 +213,36 @@
         this.gameStart()
       }.bind(this))
 
+      // 绑定教程按钮事件
+      this.gameReadyScene.getChildById('tutorialBtn').on(Hilo.event.POINTER_START, function (e) {
+        e.stopImmediatePropagation && e.stopImmediatePropagation()
+        if (this.dialogVisible) {
+          Hilo.Tween.to(this.gameReadyScene.getChildById('dialog'), {
+            y: 100,
+            alpha: 0,
+            visible: false,
+          }, {
+            duration: 200,
+          })
+          this.dialogVisible = false
+        } else {
+          Hilo.Tween.to(this.gameReadyScene.getChildById('dialog'), {
+            y: 200,
+            alpha: 1,
+            visible: true,
+          }, {
+            duration: 200,
+          })
+          this.dialogVisible = true
+        }
+      }.bind(this))
+
       // 绑定再来一次按钮事件
       this.gameOverScene.getChildById('reStartBtn').on(Hilo.event.POINTER_START, function (e) {
         e.stopImmediatePropagation && e.stopImmediatePropagation()
         this.gameOverScene.hide()
-        this.initData()
+        this.resetData()
+        this.clearBattleField()
         this.gameStart()
       }.bind(this))
 
@@ -316,7 +350,6 @@
       if (this.state !== 'playing') return
 
       if (this.role.hitTestObject(this.treasure) && !this.role.usingSkill) {
-        // If the treasure is touching the explorer, center it over the explorer
         this.catching = true
         this.treasure.x = this.role.x + 15
         this.treasure.y = this.role.y - 20
@@ -324,7 +357,6 @@
 
       for (const enemy of this.enemys) {
         if (enemy.hitTestObject(this.role) && !this.role.isInvincible && !this.role.usingSkill) {
-          // If the treasure is touching the explorer, center it over the explorer
           Databus.fire('beInjured', this.role)
           this.setBlood(-enemy.hurt)
           // this.setBlood(-100)
@@ -400,14 +432,16 @@
     gameOver: function () {
       if (this.state !== 'over') {
         this.state = 'over'
-        this.clearBattleField()
         this.audio.playBgm.pause()
+        this.audio.gameover.currentTime = 0
+        this.audio.gameover.play()
         this.gameOverScene.show(this.score)
         this.gameReadyScene.getChildById('startBtn').off()
       }
     },
 
-    initData: function () {
+    // 重置数据
+    resetData: function () {
       this.score = 0
       this.level = 1
       this.enemyAmount = 5
@@ -415,6 +449,7 @@
       this.bloodAmount = 100
     },
 
+    // 清理战场
     clearBattleField: function () {
       this.catching = false
       this.bloodAmount = 100
@@ -430,4 +465,4 @@
     },
   }
 
-})();
+})()

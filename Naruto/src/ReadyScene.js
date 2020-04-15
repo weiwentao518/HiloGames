@@ -20,10 +20,28 @@
         id: 'startBtn',
         image: props.playBtn,
         x: 20,
-        y: 800,
+        y: 700,
       })
 
-      this.addChild(background, playBtn)
+      var tutorial = new Hilo.Bitmap({
+        id: 'tutorialBtn',
+        image: props.tutorialBtn,
+        x: 20,
+        y: 900,
+      })
+
+      var dialog = new Hilo.Bitmap({
+        id: 'dialog',
+        image: props.dialog,
+        width: 920,
+        height: 692,
+        x: 150,
+        y: 100,
+        alpha: 0,
+        visible: false
+      })
+
+      this.addChild(background, playBtn, tutorial, dialog)
     }
   })
 

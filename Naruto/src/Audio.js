@@ -21,7 +21,15 @@
         },
         {
           id: 'hurt',
-          src: 'audios/man-hurt.mp3'
+          src: 'audios/hurt.mp3'
+        },
+        {
+          id: 'boom',
+          src: 'audios/boom.mp3'
+        },
+        {
+          id: 'gameover',
+          src: 'audios/gameover.mp3'
         },
         {
           id: 'skillPre',
