@@ -11,6 +11,14 @@
 
   window.onload = function () {
     game.init()
+
+    window.addEventListener("gamepadconnected", function(e) {
+      console.log("控制器已连接于 %d 位: %s. %d 个按钮, %d 个坐标方向。",
+        e.gamepad.index, e.gamepad.id,
+        e.gamepad.buttons.length, e.gamepad.axes.length);
+
+      console.log(e)
+    })
   }
 
   var game = window.game = {
@@ -32,7 +40,7 @@
     level: 1, // 关卡
     enemys: [], // 敌人列表
     enemyAmount: 5, // 敌人数量
-    skillAmount: 1, // 可释放技能数量
+    skillAmount: 10, // 可释放技能数量
     skillIconList: [], // 技能列表
     bloodAmount: 100, // 初始血量：100%
 

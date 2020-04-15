@@ -15,7 +15,7 @@
       this.isInvincible = false // 是否无敌
       this.status = 'normal' // 鸣人状态：normal 正常 / third 三尾
       this.direction = 'standing'
-      this.skillAtlas = ns.asset.skillAtlas
+      this.skillAtlas = ns.asset.skill3Atlas
       // this.background = '#ff0'
 
       this.props = props
@@ -105,10 +105,10 @@
     useSkill: function () {
       this.timer && clearTimeout(this.timer)
 
-      this.width = 384
-      this.height = 190
-      // this.width = 480 * 2
-      // this.height = 155 * 2
+      // this.width = 384
+      // this.height = 190
+      this.width = 480 * 2
+      this.height = 155 * 2
       this.x -= 50
       this.y -= 100
       this.usingSkill = true
