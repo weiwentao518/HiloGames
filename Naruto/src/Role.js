@@ -106,6 +106,8 @@
 
       this.width = 384
       this.height = 190
+      // this.width = 480 * 2
+      // this.height = 155 * 2
       this.x -= 50
       this.y -= 100
       this.usingSkill = true

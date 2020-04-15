@@ -93,8 +93,8 @@
           src: 'images/skill.png'
         },
         {
-          id: 'skill3',
-          src: 'images/skill3.png'
+          id: 'skill33',
+          src: 'images/skill33.png'
         },
         {
           id: 'shuimu',
@@ -362,6 +362,53 @@
           ],
           sprites: {
             start: new Array(30).fill(0).map((_, i) => i),
+          },
+        })
+      })()
+
+      this.skill3Atlas = (() => {
+        var w = 480
+        var h = 160
+        var xr = w + 0
+        var hr = h + 32
+        return new Hilo.TextureAtlas({
+          image: this.queue.getContent('skill33'),
+          frames: [
+            [0, 0, w, h],
+            [xr, 0, w, h],
+            [0, hr, w, h],
+            [xr, hr, w, h],
+            [0, hr * 2, w, h],
+            [xr, hr * 2, w, h],
+            [0, hr * 3, w, h],
+            [xr, hr * 3, w, h],
+            [0, hr * 4, w, h],
+            [xr, hr * 4, w, h],
+            [0, hr * 5, w, h],
+            [xr, hr * 5, w, h],
+            [0, hr * 6, w, h],
+            [xr, hr * 6, w, h],
+            [0, hr * 7, w, h],
+            [xr, hr * 7, w, h],
+            [0, hr * 8, w, h],
+            [xr, hr * 8, w, h],
+            [0, hr * 9, w, h],
+            [xr, hr * 9, w, h],
+            [0, hr * 10, w, h],
+            [xr, hr * 10, w, h],
+            [0, hr * 11, w, h],
+            [xr, hr * 11, w, h],
+            [0, hr * 12, w, h],
+            [xr, hr * 12, w, h],
+            [0, hr * 13, w, h],
+            [xr, hr * 13, w, h],
+            [0, hr * 14, w, h],
+            [xr, hr * 14, w, h],
+            [0, hr * 15, w, h],
+            [xr, hr * 15, w, h],
+          ],
+          sprites: {
+            start: new Array(32).fill(0).map((_, i) => i),
           },
         })
       })()
