@@ -1,3 +1,116 @@
+var haveEvents = 'ongamepadconnected' in window;
+
+// https://blog.csdn.net/github_35568698/article/details/79033687
+// https://developer.mozilla.org/zh-CN/docs/Web/API/Gamepad_API/Using_the_Gamepad_API
+
+function connecthandler(e) {
+  addgamepad(e.gamepad);
+}
+
+function addgamepad(gamepad) {
+  window.game.controller = gamepad;
+  // requestAnimationFrame(updateStatus);
+  setInterval(updateStatus, 32)
+}
+
+function disconnecthandler() {
+  delete window.game.controller
+}
+
+let timer = 0
+let lock = false
+function updateStatus() {
+  if (!haveEvents) {
+    scangamepads();
+  }
+  const _this = window.game
+  if (_this.role.isDead || _this.role.usingSkill) {
+    // requestAnimationFrame(updateStatus);
+    return
+  }
+
+  // for (i = 0; i < _this.controller.buttons.length; i++) {
+  //   const btn = _this.controller.buttons[i]
+  //   if (btn.pressed) {
+  //     console.log("button pressed", i)
+  //   }
+  // }
+  let padCode
+  const buttonX = _this.controller.buttons[0]
+  const buttonMusic = _this.controller.buttons[9]
+
+  if (buttonX.pressed) {
+    padCode = 32
+  }
+
+  if (buttonMusic.pressed) {
+    if (!lock) {
+      _this.musicSwitch()
+    }
+    lock = true
+    timer = setTimeout(() => {
+      lock = false
+    }, 500)
+  }
+
+  for (i = 0; i < _this.controller.axes.length; i++) {
+    if (i === 0) {
+      const row1 = _this.controller.axes[i]
+      if (row1 >= 0.8) {
+        console.log('right!', row1.toFixed(4))
+        padCode = 68
+        break
+      } else if (row1 <= -0.8) {
+        console.log('left!', row1.toFixed(4))
+        padCode = 65
+        break
+      }
+    }
+
+    if (i === 1) {
+      const col1 = _this.controller.axes[i]
+      if (col1 >= 0.8) {
+        console.log('down!', col1.toFixed(4))
+        padCode = 83
+        break
+      } else if (col1 <= -0.8) {
+        console.log('go up!', col1.toFixed(4))
+        padCode = 87
+        break
+      }
+    }
+  }
+
+  switch (padCode) {
+    case 32:
+      if (_this.skillAmount > 0) {
+        _this.skillAmount -= 1
+        _this.role.useSkill()
+        _this.initSkillAmount()
+      }
+    break
+    case 87: _this.role.run('up')
+    break
+    case 65: _this.role.run('left')
+    break
+    case 68: _this.role.run('right')
+    break
+    case 83: _this.role.run('down')
+    break
+    default: _this.role.stand()
+  }
+  // requestAnimationFrame(updateStatus);
+}
+
+function scangamepads() {
+  var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
+  for (var i = 0; i < gamepads.length; i++) {
+    if (gamepads[i]) {
+      window.game.controller = gamepads[i];
+    }
+  }
+}
+
 (function () {
   var Databus = new window.Databus()
   var {
@@ -11,14 +124,6 @@
 
   window.onload = function () {
     game.init()
-
-    window.addEventListener("gamepadconnected", function(e) {
-      console.log("控制器已连接于 %d 位: %s. %d 个按钮, %d 个坐标方向。",
-        e.gamepad.index, e.gamepad.id,
-        e.gamepad.buttons.length, e.gamepad.axes.length);
-
-      console.log(e)
-    })
   }
 
   var game = window.game = {
@@ -31,6 +136,7 @@
     stage: null, // 舞台
     state: null, // 状态机：ready 准备、playing 游戏中、over 结束、next 下一关过渡态
     ticker: null,
+    controller: null, // 手柄控制器🎮
     musicState: 'stop', // BGM🎵状态机：stop / play
     dialogVisible: false,
     gameOverScene: null,
@@ -103,6 +209,7 @@
       this.initScenes()
       // 绑定事件
       this.initEvents()
+      this.initGamepad()
 
       // 准备游戏
       this.level === 1 ? this.gameReady() : this.gameStart()
@@ -135,6 +242,11 @@
       if (e.keyCode === 32 || this.role.usingSkill) return
       console.log({keyCode: e.keyCode, tag: (e.keyCode === 32 || this.role.usingSkill)})
       this.role.stand()
+    },
+
+    initGamepad: function () {
+      window.addEventListener("gamepadconnected", connecthandler)
+      window.addEventListener("gamepaddisconnected", disconnecthandler)
     },
 
     initBackground: function () {
@@ -341,22 +453,26 @@
       // 绑定音乐🎵开关事件
       this.musicBtn.on(Hilo.event.POINTER_START, function (e) {
         e.stopImmediatePropagation && e.stopImmediatePropagation()
-        if (this.musicState === 'stop') {
-          if (this.state === 'ready') this.audio.startBgm.play()
-
-          this.musicState = 'play'
-          this.musicBtn.setImage(this.asset.musicBtn, [0, 0, 85, 92])
-          this.audio.resources.forEach(({ id, volume = 1 }) => {
-            this.audio[id].volume = volume
-          })
-        } else {
-          this.musicState = 'stop'
-          this.musicBtn.setImage(this.asset.musicBtn, [85, 0, 85, 92])
-          this.audio.resources.forEach(({ id }) => {
-            this.audio[id].volume = 0
-          })
-        }
+        this.musicSwitch()
       }.bind(this))
+    },
+
+    musicSwitch: function () {
+      if (this.musicState === 'stop') {
+        if (this.state === 'ready') this.audio.startBgm.play()
+
+        this.musicState = 'play'
+        this.musicBtn.setImage(this.asset.musicBtn, [0, 0, 85, 92])
+        this.audio.resources.forEach(({ id, volume = 1 }) => {
+          this.audio[id].volume = volume
+        })
+      } else {
+        this.musicState = 'stop'
+        this.musicBtn.setImage(this.asset.musicBtn, [85, 0, 85, 92])
+        this.audio.resources.forEach(({ id }) => {
+          this.audio[id].volume = 0
+        })
+      }
     },
 
     // Game帧渲染函数
