@@ -21,7 +21,6 @@
       padding: 0;
       margin: 0;
       font-size: 12px;
-      background-color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -44,6 +43,41 @@
     .pressed {
       background-color: teal;
     }
+
+    .loading {
+      display: flex;
+      width: 600px;
+      height: 30px;
+      padding-left: 15px;
+      overflow-x: hidden;
+      background: tomato;
+      box-sizing: border-box;
+      border-radius: 16px;
+      position: relative;
+    }
+    .loading::after {
+      display: block;
+      content: '努力加载中，请稍后';
+      position: absolute;
+      top: -2px;
+      left: 33%;
+      font-size: 24px;
+      color: #fff;
+    }
+    .loading > i {
+      flex: none;
+      width: 30px;
+      height: 100%;
+      margin-right: 30px;
+      background: orange;
+      transform: skewX(-45deg);
+      animation: load 0.5s linear infinite;
+    }
+    @keyframes load {
+      100% {
+        transform: skewX(-45deg) translateX(-200%);
+      }
+    }
   </style>
 
   <script type="text/javascript" src="../hilo-standalone.js"></script>
@@ -56,10 +90,12 @@
   <script type="text/javascript" src="src/ReadyScene.js"></script>
   <script type="text/javascript" src="src/OverScene.js"></script>
   <!-- <script type="text/javascript" src="src/gamePad2.js"></script> -->
-
 </head>
 
 <body>
+  <div class="loading">
+    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+  </div>
 </body>
 
 </html>

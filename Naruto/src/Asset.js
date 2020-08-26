@@ -3,7 +3,6 @@
   var Asset = ns.Asset = Hilo.Class.create({
     Mixes: Hilo.EventMixin,
 
-    bg: null,
     roleAtlas: null,
     resources: [],
 
@@ -145,9 +144,9 @@
             [xr * 3, hr, w, h],
 
             [5, hr * 2, w, h],
-            [xr, hr * 2, w, h],
+            [xr, hr * 2, w + 5, h],
             [xr * 2, hr * 2, w, h],
-            [xr * 3, hr * 2, w, h],
+            [xr * 3 - 5, hr * 2, w + 5, h],
 
             [5, hr * 3, w, h],
             [xr, hr * 3, w, h],
