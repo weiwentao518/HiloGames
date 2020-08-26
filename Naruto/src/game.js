@@ -130,14 +130,14 @@ function scangamepads() {
     width: 0,
     height: 0,
 
-    bg: null,
-    role: null,
-    asset: null,
+    bg: null, // 舞台背景
+    role: null, // 角色对象
+    asset: null, // 静态资源
     stage: null, // 舞台
     state: null, // 状态机：ready 准备、playing 游戏中、over 结束、next 下一关过渡态
-    ticker: null,
+    ticker: null, // Hilo全局计时器
     controller: null, // 手柄控制器🎮
-    musicState: 'stop', // BGM🎵状态机：stop / play
+    musicState: 'stop', // BGM🎵状态：stop / play
     dialogVisible: false,
     gameOverScene: null,
     gameReadyScene: null,
@@ -179,6 +179,8 @@ function scangamepads() {
         scaleY: this.scale
       })
       document.body.appendChild(this.stage.canvas)
+      var loading = document.querySelector('.loading')
+      loading.parentNode.removeChild(loading)
 
       // 启动计时器
       this.ticker = new Hilo.Ticker(60)
@@ -360,8 +362,8 @@ function scangamepads() {
       var atlas = randomEnemy()
 
       for (let i = 0; i < this.enemyAmount; i++) {
-        const dog = new game.Enemy({
-          id: 'dog',
+        const enemy = new game.Enemy({
+          id: `enemy_${i}`,
           atlas: this.asset[atlas],
           speed: 5 + this.level / 2,
           hurt: 10 + this.level,
@@ -370,8 +372,8 @@ function scangamepads() {
           startY: randomInt(60, BG_CORNER.bottom),
         }).addTo(this.stage, 3)
 
-        dog.getReady()
-        this.enemys.push(dog)
+        enemy.getReady()
+        this.enemys.push(enemy)
       }
     },
 
@@ -594,6 +596,7 @@ function scangamepads() {
       this.ticker.removeTick(this.stage)
       this.role.removeFromParent()
       this.enemys.forEach(i => i.removeFromParent())
+      this.enemys = []
       this.stage.removeAllChildren()
       document.removeEventListener('keydown', this.onKeydown)
       document.removeEventListener('keyup', this.onKeyup)

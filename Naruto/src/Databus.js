@@ -21,14 +21,17 @@
           height: 75
         },
         thirdRow: {
-          width: 75 * 1.2,
-          height: 60 * 1.2
+          width: 75 * 1.5,
+          height: 60 * 1.5
         },
         thirdCol: {
-          width: 55 * 1.2,
-          height: 70 * 1.2
+          width: 55 * 1.5,
+          height: 70 * 1.5
         }
       }
+
+      Object.freeze(this.BG_CORNER)
+      Object.freeze(this.ROLE_RECT)
     },
 
     sleep(ms) {

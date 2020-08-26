@@ -54,37 +54,25 @@
       this.status === 'third' && this.setRoleRect(direction)
 
       switch (direction) {
-        case 'up': (() => {
-          if (this.y <= BG_CORNER.top) {
-            this.y = BG_CORNER.top
-          } else {
-            this.y -= this.speed
-          }
-        })()
+        case 'up':
+          this.y = this.y <= BG_CORNER.top
+            ? BG_CORNER.top
+            : this.y - this.speed
         break
-        case 'left': (() => {
-          if (this.x <= BG_CORNER.left) {
-            this.x = BG_CORNER.left
-          } else {
-            this.x -= this.speed
-          }
-        })()
+        case 'left':
+          this.x = this.x <= BG_CORNER.left
+            ? BG_CORNER.left
+            : this.x - this.speed
         break
-        case 'right': (() => {
-          if (this.x >= BG_CORNER.right) {
-            this.x = BG_CORNER.right
-          } else {
-            this.x += this.speed
-          }
-        })()
+        case 'right':
+          this.x = this.x >= BG_CORNER.right
+            ? BG_CORNER.right
+            : this.x + this.speed
         break
-        case 'down': (() => {
-          if (this.y >= BG_CORNER.bottom) {
-            this.y = BG_CORNER.bottom
-          } else {
-            this.y += this.speed
-          }
-        })()
+        case 'down':
+          this.y = this.y >= BG_CORNER.bottom
+            ? BG_CORNER.bottom
+            : this.y + this.speed
         break
         default: break
       }
