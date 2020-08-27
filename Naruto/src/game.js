@@ -154,6 +154,7 @@ function scangamepads() {
       this.asset = new game.Asset()
       this.asset.on('complete', function (e) {
         this.asset.off('complete')
+        removeLoading()
         this.initStage()
       }.bind(this))
       this.asset.load()
@@ -179,8 +180,6 @@ function scangamepads() {
         scaleY: this.scale
       })
       document.body.appendChild(this.stage.canvas)
-      var loading = document.querySelector('.loading')
-      loading.parentNode.removeChild(loading)
 
       // 启动计时器
       this.ticker = new Hilo.Ticker(60)
@@ -600,8 +599,15 @@ function scangamepads() {
       this.stage.removeAllChildren()
       document.removeEventListener('keydown', this.onKeydown)
       document.removeEventListener('keyup', this.onKeyup)
+      var canvas = document.getElementsByTagName('canvas')[0]
+      canvas && canvas.parentNode.removeChild(canvas)
       this.initStage()
     },
+  }
+
+  function removeLoading () {
+    var loading = document.querySelector('.loading')
+    loading && loading.parentNode.removeChild(loading)
   }
 
 })()
